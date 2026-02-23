@@ -1,0 +1,74 @@
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bn-sidebar);
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-lg);
+  padding: 14px 20px;
+  margin-bottom: 2rem;
+  transition: border-color var(--bn-transition-fast), box-shadow var(--bn-transition-fast);
+}
+
+.searchBar:focus-within {
+  border-color: var(--bn-accent);
+  box-shadow: 0 0 0 3px var(--bn-accent-light);
+}
+
+.searchBar svg {
+  width: 20px;
+  height: 20px;
+  color: var(--bn-text-muted);
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  background: none;
+  font-size: 0.9375rem;
+  color: var(--bn-text);
+  outline: none;
+  font-family: inherit;
+}
+
+.input::placeholder {
+  color: var(--bn-text-muted);
+}
+
+.clearBtn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--bn-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--bn-transition-fast), color var(--bn-transition-fast);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.clearBtn.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.clearBtn:hover {
+  background-color: var(--bn-border-light);
+  color: var(--bn-text);
+}
+
+.clearBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 480px) {
+  .searchBar {
+    padding: 12px 16px;
+  }
+}

@@ -1,0 +1,72 @@
+.topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--bn-topbar-height);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bn-bg);
+  border-bottom: 1px solid var(--bn-border);
+  z-index: 1030;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--bn-accent);
+}
+
+.logoText {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iconBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--bn-radius-lg);
+  color: var(--bn-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--bn-transition-fast), color var(--bn-transition-fast);
+}
+
+.iconBtn:hover {
+  background-color: var(--bn-border-light);
+  color: var(--bn-text);
+}
+
+.iconBtn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.hamburger {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex !important;
+  }
+}

@@ -1,0 +1,110 @@
+.container {
+  margin-bottom: 3.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.seeMore {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--bn-accent);
+  cursor: pointer;
+  transition: opacity var(--bn-transition-fast);
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+.seeMore:hover {
+  opacity: 0.8;
+}
+
+.scroll {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0 16px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bn-border) transparent;
+  scroll-snap-type: x proximity;
+  cursor: grab;
+}
+
+.scroll:active {
+  cursor: grabbing;
+}
+
+.scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: var(--bn-border);
+  border-radius: 3px;
+}
+
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--bn-text-muted);
+}
+
+.dragging {
+  scroll-behavior: auto;
+  user-select: none;
+}
+
+.item {
+  flex-shrink: 0;
+}
+
+.itemAuthor {
+  width: 150px;
+}
+
+.itemBook {
+  width: 160px;
+}
+
+.itemSeries {
+  width: 260px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin-bottom: 2.5rem;
+  }
+
+  .scroll {
+    gap: 1rem;
+  }
+
+  .itemAuthor {
+    width: 120px;
+  }
+
+  .itemBook {
+    width: 140px;
+  }
+
+  .itemSeries {
+    width: 220px;
+  }
+}

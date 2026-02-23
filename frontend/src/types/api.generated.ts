@@ -1,0 +1,10 @@
+export type Book = import('./index').Book;
+export type Author = import('./index').Author;
+export type Series = import('./index').Series;
+export type BookFile = import('./index').BookFile;
+export type Pagination = import('./index').Pagination;
+export type BookListResponse = import('./index').BookListResponse;
+export type AuthorListResponse = import('./index').AuthorListResponse;
+export type SeriesListResponse = import('./index').SeriesListResponse;
+export type SearchResponse = import('./index').SearchResponse;
+export type Overview = import('./index').Overview;

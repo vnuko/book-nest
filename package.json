@@ -1,0 +1,33 @@
+{
+  "name": "book-nest",
+  "version": "1.0.0",
+  "description": "Ebook management system with AI-powered indexing - Monorepo",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=@book-nest/backend",
+    "dev:frontend": "npm run dev --workspace=@book-nest/frontend",
+    "build": "npm run build --workspaces --if-present",
+    "build:backend": "npm run build --workspace=@book-nest/backend",
+    "build:frontend": "npm run build --workspace=@book-nest/frontend",
+    "start": "npm run start --workspace=@book-nest/backend",
+    "start:backend": "npm run start --workspace=@book-nest/backend",
+    "start:frontend": "npm run start --workspace=@book-nest/frontend",
+    "test": "npm run test --workspaces --if-present",
+    "test:backend": "npm run test --workspace=@book-nest/backend",
+    "test:frontend": "npm run test --workspace=@book-nest/frontend",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:backend": "npm run lint --workspace=@book-nest/backend",
+    "lint:frontend": "npm run lint --workspace=@book-nest/frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -1,0 +1,150 @@
+.header {
+  display: flex;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.coverLarge {
+  width: 280px;
+  flex-shrink: 0;
+  border-radius: var(--bn-radius);
+  box-shadow: var(--bn-shadow-hover);
+}
+
+.info {
+  flex: 1;
+  padding-top: 0.5rem;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+
+.meta {
+  font-size: 1.125rem;
+  color: var(--bn-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.seriesLink {
+  font-size: 0.875rem;
+  color: var(--bn-accent);
+  margin-bottom: 1rem;
+}
+
+.seriesLink:hover {
+  text-decoration: underline;
+}
+
+.description {
+  font-size: 1rem;
+  color: var(--bn-text-secondary);
+  line-height: 1.7;
+}
+
+.downloadSection {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--bn-border);
+}
+
+.downloadTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.downloadTitle svg {
+  width: 20px;
+  height: 20px;
+  color: var(--bn-accent);
+}
+
+.downloadList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.downloadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.625rem 1rem;
+  background: var(--bn-bg);
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--bn-text);
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+  text-decoration: none;
+}
+
+.downloadBtn:hover {
+  background: var(--bn-sidebar);
+  border-color: var(--bn-accent);
+  color: var(--bn-accent);
+}
+
+.downloadBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.fileBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--bn-radius-sm);
+  min-width: 40px;
+}
+
+.fileBadgeEpub { background: #E8F5E9; color: #2E7D32; }
+.fileBadgeMobi { background: #FFF3E0; color: #E65100; }
+.fileBadgePdf { background: #FFEBEE; color: #C62828; }
+.fileBadgeTxt { background: #E3F2FD; color: #1565C0; }
+.fileBadgeAzw3 { background: #F3E5F5; color: #7B1FA2; }
+.fileBadgeFb2 { background: #FFF8E1; color: #F57F17; }
+
+.error {
+  text-align: center;
+  padding: 3rem;
+  color: var(--bn-text-muted);
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .coverLarge {
+    width: 200px;
+  }
+
+  .info {
+    padding-top: 0;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .downloadList {
+    justify-content: center;
+  }
+}

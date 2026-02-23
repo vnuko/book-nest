@@ -1,0 +1,26 @@
+.main {
+  margin-left: var(--bn-sidebar-width);
+  margin-top: var(--bn-topbar-height);
+  min-height: calc(100vh - var(--bn-topbar-height));
+}
+
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+  }
+}
+
+.skipLink {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  padding: 8px 16px;
+  background: var(--bn-accent);
+  color: white;
+  z-index: 9999;
+  transition: top var(--bn-transition-fast);
+}
+
+.skipLink:focus {
+  top: 0;
+}

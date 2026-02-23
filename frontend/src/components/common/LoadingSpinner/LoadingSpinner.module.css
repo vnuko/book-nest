@@ -1,0 +1,22 @@
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.spinner svg {
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  color: var(--bn-accent);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
