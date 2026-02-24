@@ -1,11 +1,20 @@
-@import './variables.css';
+# Change Request: Global Styles Update
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+## Context
+Update global body and scrollbar styles to match the dark theme template.
 
+## Reference
+`frontend/template/index.html` - lines 21-26, 385-401
+
+## Target Files
+- `frontend/src/styles/global.css`
+
+## Changes Required
+
+### Update `global.css`
+
+1. **Body styles** - Add gradient background:
+```css
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background: linear-gradient(135deg, #1a1a1a 0%, #000000 50%, #1a1a1a 100%);
@@ -16,35 +25,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
+```
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-button {
-  font-family: inherit;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  font-weight: 600;
-}
-
-p {
-  margin: 0;
-}
-
-:focus-visible {
-  outline: 2px solid var(--bn-accent);
-  outline-offset: 2px;
-}
-
+2. **Scrollbar styles** - Darker scrollbar:
+```css
 ::-webkit-scrollbar {
   width: 12px;
   height: 12px;
@@ -62,13 +46,9 @@ p {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+```
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
+## Visual Outcome
+- Subtle gradient background across the app
+- Dark, semi-transparent scrollbars that match the theme
+- Prevent horizontal scroll overflow

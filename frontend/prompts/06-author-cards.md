@@ -1,3 +1,20 @@
+# Change Request: Author Cards Dark Theme
+
+## Context
+Update author card styling to match the dark template with circular photos.
+
+## Reference
+`frontend/template/index.html` - lines 316-383
+
+## Target Files
+- `frontend/src/pages/AuthorsPage/AuthorsPage.module.css`
+- May need new component: `frontend/src/components/cards/AuthorCard/AuthorCard.module.css`
+
+## Changes Required
+
+### Author Card Styles
+
+```css
 .card {
   background-color: rgba(255, 255, 255, 0.05);
   padding: 32px;
@@ -6,9 +23,6 @@
   cursor: pointer;
   text-align: center;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .card:hover {
@@ -28,27 +42,10 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   border: 4px solid rgba(255, 255, 255, 0.1);
   transition: all var(--bn-transition-normal);
+  margin: 0 auto;
 }
 
 .card:hover .photo {
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.avatarWrapper {
-  margin-bottom: 20px;
-}
-
-.avatar {
-  width: 128px;
-  height: 128px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  transition: all var(--bn-transition-normal);
-}
-
-.card:hover .avatar {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -79,26 +76,33 @@
 .followBtn:hover {
   transform: scale(1.05);
 }
+```
 
-.cardLarge .avatarWrapper,
-.cardLarge .avatar {
-  width: 128px;
-  height: 128px;
+### Grid Layout for Authors Page
+
+```css
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
 }
 
 @media (max-width: 768px) {
-  .avatarWrapper,
-  .avatar,
-  .photo {
-    width: 100px;
-    height: 100px;
-  }
-
-  .card {
-    padding: 20px;
-  }
-
-  .name {
-    font-size: 16px;
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
   }
 }
+```
+
+## Notes for TSX Updates
+The author card component may need:
+1. Circular photo with border styling
+2. Centered text layout
+3. Follow button at bottom
+
+## Visual Outcome
+- Centered card layout with circular author photo
+- Border on photo that changes on hover
+- Book count and follow button
+- Hover lift effect

@@ -1,3 +1,21 @@
+# Change Request: Theme Colors to Dark Mode
+
+## Context
+Transform the application from a light theme to a dark theme based on the BookSpot template design.
+
+## Reference
+`frontend/template/index.html` - lines 21-26 (body styles)
+
+## Target Files
+- `frontend/src/styles/variables.css`
+
+## Changes Required
+
+### Update CSS Variables in `variables.css`
+
+Replace the current light theme variables with dark theme:
+
+```css
 :root {
   --bn-bg: #000000;
   --bn-bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #000000 50%, #1a1a1a 100%);
@@ -24,3 +42,12 @@
   --bn-transition-normal: 300ms ease;
   --bn-transition-slow: 400ms ease;
 }
+```
+
+## Visual Outcome
+- Pure black background with subtle gradient
+- White text on dark backgrounds
+- Subtle white transparent borders (10% opacity)
+- Larger border radius for buttons/search (pill shape)
+- Wider sidebar (260px vs 220px)
+- Darker, more pronounced shadows

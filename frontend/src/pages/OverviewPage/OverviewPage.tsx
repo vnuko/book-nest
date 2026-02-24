@@ -26,6 +26,11 @@ export function OverviewPage() {
 
   return (
     <div className="page-content">
+      <div className={styles.sectionHeader}>
+        <h1 className={styles.sectionTitle}>Welcome to BookSpot</h1>
+        <p className={styles.sectionSubtitle}>Discover your next favorite book</p>
+      </div>
+
       <HorizontalScroll
         title="Popular Authors"
         items={authors}

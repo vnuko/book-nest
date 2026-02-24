@@ -1,12 +1,16 @@
 .main {
   margin-left: var(--bn-sidebar-width);
-  margin-top: var(--bn-topbar-height);
-  min-height: calc(100vh - var(--bn-topbar-height));
+  margin-top: 0;
+  min-height: 100vh;
+  padding: 40px;
+  overflow-y: auto;
 }
 
 @media (max-width: 768px) {
   .main {
     margin-left: 0;
+    padding: 24px;
+    padding-top: 80px;
   }
 }
 
@@ -23,4 +27,37 @@
 
 .skipLink:focus {
   top: 0;
+}
+
+.mobileMenuBtn {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--bn-text);
+  cursor: pointer;
+  z-index: 1020;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--bn-transition-fast);
+}
+
+.mobileMenuBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobileMenuBtn svg {
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 768px) {
+  .mobileMenuBtn {
+    display: flex;
+  }
 }

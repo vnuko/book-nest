@@ -1,3 +1,20 @@
+# Change Request: Sidebar Dark Theme Styling
+
+## Context
+Update the sidebar component to match the dark template design with new styling.
+
+## Reference
+`frontend/template/index.html` - lines 34-110
+
+## Target Files
+- `frontend/src/components/common/Sidebar/Sidebar.module.css`
+
+## Changes Required
+
+### Update `Sidebar.module.css`
+
+1. **Overlay** - Darker overlay:
+```css
 .overlay {
   position: fixed;
   inset: 0;
@@ -7,12 +24,10 @@
   z-index: 1040;
   transition: opacity var(--bn-transition-normal), visibility var(--bn-transition-normal);
 }
+```
 
-.overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
-
+2. **Sidebar container** - Update padding and remove top offset:
+```css
 .sidebar {
   position: fixed;
   top: 0;
@@ -27,7 +42,10 @@
   display: flex;
   flex-direction: column;
 }
+```
 
+3. **Logo section** - Add at top of sidebar:
+```css
 .logo {
   margin-bottom: 40px;
 }
@@ -43,13 +61,10 @@
   font-size: 14px;
   color: var(--bn-text-secondary);
 }
+```
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
+4. **Nav items** - Rounded with hover effects:
+```css
 .navItem {
   display: flex;
   align-items: center;
@@ -84,6 +99,13 @@
   color: var(--bn-text);
 }
 
+.navItem.active::before {
+  display: none;
+}
+```
+
+5. **Sidebar footer** - Add at bottom:
+```css
 .sidebarFooter {
   padding-top: 24px;
   border-top: 1px solid var(--bn-border);
@@ -94,7 +116,10 @@
   font-size: 12px;
   color: #666666;
 }
+```
 
+6. **Mobile styles**:
+```css
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);
@@ -105,3 +130,11 @@
     transform: translateX(0);
   }
 }
+```
+
+## Visual Outcome
+- Sidebar starts from top (no topbar offset)
+- Logo area at top with title and subtitle
+- Darker nav item backgrounds on hover
+- Footer at bottom with copyright
+- Smoother transitions

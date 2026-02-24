@@ -1,3 +1,19 @@
+.sectionHeader {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  font-size: 42px;
+  font-weight: bold;
+  color: var(--bn-text);
+  margin-bottom: 8px;
+}
+
+.sectionSubtitle {
+  font-size: 16px;
+  color: var(--bn-text-secondary);
+}
+
 .emptyState {
   text-align: center;
   padding: 3.75rem 1.25rem;
@@ -15,4 +31,10 @@
   font-size: 1rem;
   max-width: 400px;
   margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .sectionTitle {
+    font-size: 32px;
+  }
 }

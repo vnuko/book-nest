@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookSpot - Your Literary Companion</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 50%, #1a1a1a 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background-color: #000000;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            margin-bottom: 40px;
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            font-size: 14px;
+            color: #999999;
+        }
+
+        .nav-menu {
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            color: #999999;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-right: 16px;
+            width: 20px;
+        }
+
+        .nav-item span {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .sidebar-footer {
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
+        .sidebar-footer p {
+            font-size: 12px;
+            color: #666666;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 48px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999999;
+            font-size: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 24px 18px 56px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #999999;
+        }
+
+        /* Section Styles */
+        .content-section {
+            margin-bottom: 64px;
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 42px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: #999999;
+        }
+
+        .section-heading {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 24px;
+        }
+
+        /* Book Card Styles */
+        .book-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            margin-bottom: 24px;
+        }
+
+        .book-card:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .book-cover-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .book-cover {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .book-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .book-card:hover .book-overlay {
+            display: flex;
+        }
+
+        .play-button {
+            width: 56px;
+            height: 56px;
+            background-color: #ffffff;
+            color: #000000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+        }
+
+        .book-info {
+            padding: 0 4px;
+        }
+
+        .book-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .book-author {
+            font-size: 14px;
+            color: #999999;
+            margin-bottom: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 8px;
+        }
+
+        .book-year {
+            font-size: 12px;
+            color: #666666;
+        }
+
+        .book-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .book-rating {
+            font-size: 12px;
+            color: #ffc107;
+        }
+
+        .favorite-btn {
+            background: none;
+            border: none;
+            color: #999999;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            color: #dc3545;
+        }
+
+        /* Author Card Styles */
+        .author-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 32px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            height: 100%;
+            margin-bottom: 24px;
+        }
+
+        .author-card:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .author-photo-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .author-photo {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .author-card:hover .author-photo {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .author-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .author-books {
+            font-size: 14px;
+            color: #999999;
+            margin-bottom: 12px;
+        }
+
+        .author-followers {
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 20px;
+        }
+
+        .follow-btn {
+            padding: 10px 28px;
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .follow-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Scrollbar Styles */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+                padding: 24px 16px;
+            }
+
+            .main-content {
+                padding: 24px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .section-heading {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>BookSpot</h1>
+                <p>Your literary companion</p>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-view="overview">
+                    <i class="bi bi-grid"></i>
+                    <span>Overview</span>
+                </button>
+                <button class="nav-item" data-view="authors">
+                    <i class="bi bi-people"></i>
+                    <span>Authors</span>
+                </button>
+                <button class="nav-item" data-view="books">
+                    <i class="bi bi-book"></i>
+                    <span>Books</span>
+                </button>
+                <button class="nav-item" data-view="series">
+                    <i class="bi bi-collection"></i>
+                    <span>Series</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>© 2026 BookSpot</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="searchInput"
+                        placeholder="Search for books, authors, series..."
+                    >
+                </div>
+            </div>
+
+            <!-- Dynamic Content Area -->
+            <div id="contentArea"></div>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Mock Data
+        const books = [
+            {
+                id: 1,
+                title: "The Midnight Library",
+                author: "Matt Haig",
+                cover: "https://images.unsplash.com/photo-1752243731865-c2fa851af7ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.5,
+                year: 2020,
+                series: null
+            },
+            {
+                id: 2,
+                title: "Where the Crawdads Sing",
+                author: "Delia Owens",
+                cover: "https://images.unsplash.com/photo-1695037520057-0e9cb68f321d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.7,
+                year: 2018,
+                series: null
+            },
+            {
+                id: 3,
+                title: "The Seven Husbands of Evelyn Hugo",
+                author: "Taylor Jenkins Reid",
+                cover: "https://images.unsplash.com/photo-1719532459597-77fc2041aa16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.6,
+                year: 2017,
+                series: null
+            },
+            {
+                id: 4,
+                title: "Pride and Prejudice",
+                author: "Jane Austen",
+                cover: "https://images.unsplash.com/photo-1771313121019-4d0ce055b9a4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.9,
+                year: 1813,
+                series: null
+            },
+            {
+                id: 5,
+                title: "The Silent Patient",
+                author: "Alex Michaelides",
+                cover: "https://images.unsplash.com/photo-1698956483970-a47edef29331?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.3,
+                year: 2019,
+                series: null
+            },
+            {
+                id: 6,
+                title: "A Court of Thorns and Roses",
+                author: "Sarah J. Maas",
+                cover: "https://images.unsplash.com/photo-1711185900806-bf85e7fe7767?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.4,
+                year: 2015,
+                series: "A Court of Thorns and Roses"
+            },
+            {
+                id: 7,
+                title: "It Ends with Us",
+                author: "Colleen Hoover",
+                cover: "https://images.unsplash.com/photo-1735805819333-19bed84b654e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.5,
+                year: 2016,
+                series: null
+            },
+            {
+                id: 8,
+                title: "Project Hail Mary",
+                author: "Andy Weir",
+                cover: "https://images.unsplash.com/photo-1554357395-dbdc356ca5da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.8,
+                year: 2021,
+                series: null
+            },
+            {
+                id: 9,
+                title: "Milk and Honey",
+                author: "Rupi Kaur",
+                cover: "https://images.unsplash.com/photo-1513094116080-a9255c930d1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.2,
+                year: 2014,
+                series: null
+            },
+            {
+                id: 10,
+                title: "Educated",
+                author: "Tara Westover",
+                cover: "https://images.unsplash.com/photo-1762275193981-6fcbd5343c88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.7,
+                year: 2018,
+                series: null
+            },
+            {
+                id: 11,
+                title: "The Great Gatsby",
+                author: "F. Scott Fitzgerald",
+                cover: "https://images.unsplash.com/photo-1752243731865-c2fa851af7ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.4,
+                year: 1925,
+                series: null
+            },
+            {
+                id: 12,
+                title: "Atomic Habits",
+                author: "James Clear",
+                cover: "https://images.unsplash.com/photo-1695037520057-0e9cb68f321d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400",
+                rating: 4.8,
+                year: 2018,
+                series: null
+            }
+        ];
+
+        const authors = [
+            {
+                id: 1,
+                name: "Taylor Jenkins Reid",
+                photo: "https://images.unsplash.com/photo-1715618964920-5ff08c514f35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 8,
+                followers: "2.4M"
+            },
+            {
+                id: 2,
+                name: "Andy Weir",
+                photo: "https://images.unsplash.com/photo-1579540830482-659e7518c895?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 5,
+                followers: "1.8M"
+            },
+            {
+                id: 3,
+                name: "Rupi Kaur",
+                photo: "https://images.unsplash.com/photo-1655056963308-2eb0a3600151?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 4,
+                followers: "4.2M"
+            },
+            {
+                id: 4,
+                name: "Matt Haig",
+                photo: "https://images.unsplash.com/photo-1712687947291-8e89f1f426ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 12,
+                followers: "1.5M"
+            },
+            {
+                id: 5,
+                name: "Jane Austen",
+                photo: "https://images.unsplash.com/photo-1760348462684-f988e6bc95c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 6,
+                followers: "8.7M"
+            },
+            {
+                id: 6,
+                name: "Colleen Hoover",
+                photo: "https://images.unsplash.com/photo-1715618964920-5ff08c514f35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 23,
+                followers: "3.1M"
+            },
+            {
+                id: 7,
+                name: "Alex Michaelides",
+                photo: "https://images.unsplash.com/photo-1579540830482-659e7518c895?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 3,
+                followers: "920K"
+            },
+            {
+                id: 8,
+                name: "Sarah J. Maas",
+                photo: "https://images.unsplash.com/photo-1655056963308-2eb0a3600151?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 15,
+                followers: "2.9M"
+            },
+            {
+                id: 9,
+                name: "Delia Owens",
+                photo: "https://images.unsplash.com/photo-1715618964920-5ff08c514f35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 7,
+                followers: "1.3M"
+            },
+            {
+                id: 10,
+                name: "Tara Westover",
+                photo: "https://images.unsplash.com/photo-1655056963308-2eb0a3600151?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=300",
+                books: 2,
+                followers: "1.1M"
+            }
+        ];
+
+        const series = [
+            {
+                id: 1,
+                name: "A Court of Thorns and Roses",
+                author: "Sarah J. Maas",
+                books: 5,
+                cover: "https://images.unsplash.com/photo-1711185900806-bf85e7fe7767?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400"
+            },
+            {
+                id: 2,
+                name: "Harry Potter",
+                author: "J.K. Rowling",
+                books: 7,
+                cover: "https://images.unsplash.com/photo-1698956483970-a47edef29331?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400"
+            },
+            {
+                id: 3,
+                name: "The Hunger Games",
+                author: "Suzanne Collins",
+                books: 4,
+                cover: "https://images.unsplash.com/photo-1752243731865-c2fa851af7ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400"
+            },
+            {
+                id: 4,
+                name: "Throne of Glass",
+                author: "Sarah J. Maas",
+                books: 8,
+                cover: "https://images.unsplash.com/photo-1719532459597-77fc2041aa16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400"
+            },
+            {
+                id: 5,
+                name: "Percy Jackson",
+                author: "Rick Riordan",
+                books: 5,
+                cover: "https://images.unsplash.com/photo-1695037520057-0e9cb68f321d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400"
+            },
+            {
+                id: 6,
+                name: "The Lord of the Rings",
+                author: "J.R.R. Tolkien",
+                books: 3,
+                cover: "https://images.unsplash.com/photo-1771313121019-4d0ce055b9a4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400"
+            }
+        ];
+
+        // State
+        let currentView = 'overview';
+        let searchQuery = '';
+        let favorites = new Set();
+
+        // Helper Functions
+        function createBookCard(book) {
+            return `
+                <div class="col">
+                    <div class="book-card">
+                        <div class="book-cover-wrapper">
+                            <img src="${book.cover}" alt="${book.title}" class="book-cover">
+                            <div class="book-overlay">
+                                <button class="play-button">
+                                    <i class="bi bi-play-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="book-info">
+                            <div class="book-title">${book.title}</div>
+                            <div class="book-author">${book.author}</div>
+                            <div class="book-meta">
+                                <span class="book-year">${book.year}</span>
+                                <div class="book-actions">
+                                    <span class="book-rating">★ ${book.rating}</span>
+                                    <button class="favorite-btn ${favorites.has(book.id) ? 'active' : ''}" data-id="${book.id}">
+                                        <i class="bi ${favorites.has(book.id) ? 'bi-heart-fill' : 'bi-heart'}"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createAuthorCard(author) {
+            return `
+                <div class="col">
+                    <div class="author-card">
+                        <div class="author-photo-wrapper">
+                            <img src="${author.photo}" alt="${author.name}" class="author-photo">
+                        </div>
+                        <div class="author-name">${author.name}</div>
+                        <div class="author-books">${author.books} books published</div>
+                        <div class="author-followers">${author.followers} followers</div>
+                        <button class="follow-btn">Follow</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createSeriesCard(seriesItem) {
+            return `
+                <div class="col">
+                    <div class="book-card">
+                        <div class="book-cover-wrapper">
+                            <img src="${seriesItem.cover}" alt="${seriesItem.name}" class="book-cover">
+                            <div class="book-overlay">
+                                <button class="play-button">
+                                    <i class="bi bi-collection"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="book-info">
+                            <div class="book-title">${seriesItem.name}</div>
+                            <div class="book-author">${seriesItem.author}</div>
+                            <div class="book-meta">
+                                <span class="book-year">${seriesItem.books} books</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterData() {
+            const query = searchQuery.toLowerCase();
+            const filteredBooks = books.filter(book => 
+                book.title.toLowerCase().includes(query) || 
+                book.author.toLowerCase().includes(query)
+            );
+            const filteredAuthors = authors.filter(author => 
+                author.name.toLowerCase().includes(query)
+            );
+            const filteredSeries = series.filter(s => 
+                s.name.toLowerCase().includes(query) || 
+                s.author.toLowerCase().includes(query)
+            );
+            return { filteredBooks, filteredAuthors, filteredSeries };
+        }
+
+        function renderOverview() {
+            const { filteredBooks, filteredAuthors } = filterData();
+            
+            return `
+                <div class="content-section">
+                    <div class="section-header">
+                        <h1 class="section-title">Welcome to BookSpot</h1>
+                        <p class="section-subtitle">Discover your next favorite book</p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2 class="section-heading">Trending Now</h2>
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-4">
+                        ${filteredBooks.slice(0, 6).map(book => createBookCard(book)).join('')}
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2 class="section-heading">Featured Authors</h2>
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+                        ${filteredAuthors.slice(0, 5).map(author => createAuthorCard(author)).join('')}
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2 class="section-heading">Recently Added</h2>
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-4">
+                        ${filteredBooks.slice(6, 12).map(book => createBookCard(book)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBooks() {
+            const { filteredBooks } = filterData();
+            
+            return `
+                <div class="content-section">
+                    <div class="section-header">
+                        <h1 class="section-title">All Books</h1>
+                        <p class="section-subtitle">${filteredBooks.length} books available</p>
+                    </div>
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-4">
+                        ${filteredBooks.map(book => createBookCard(book)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAuthors() {
+            const { filteredAuthors } = filterData();
+            
+            return `
+                <div class="content-section">
+                    <div class="section-header">
+                        <h1 class="section-title">All Authors</h1>
+                        <p class="section-subtitle">${filteredAuthors.length} authors to explore</p>
+                    </div>
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+                        ${filteredAuthors.map(author => createAuthorCard(author)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSeries() {
+            const { filteredSeries } = filterData();
+            
+            return `
+                <div class="content-section">
+                    <div class="section-header">
+                        <h1 class="section-title">Book Series</h1>
+                        <p class="section-subtitle">${filteredSeries.length} series available</p>
+                    </div>
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-4">
+                        ${filteredSeries.map(s => createSeriesCard(s)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderContent() {
+            const contentArea = document.getElementById('contentArea');
+            
+            let html = '';
+            switch(currentView) {
+                case 'overview':
+                    html = renderOverview();
+                    break;
+                case 'books':
+                    html = renderBooks();
+                    break;
+                case 'authors':
+                    html = renderAuthors();
+                    break;
+                case 'series':
+                    html = renderSeries();
+                    break;
+            }
+            
+            contentArea.innerHTML = html;
+            attachEventListeners();
+        }
+
+        function attachEventListeners() {
+            // Favorite buttons
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const id = parseInt(this.dataset.id);
+                    
+                    if (favorites.has(id)) {
+                        favorites.delete(id);
+                    } else {
+                        favorites.add(id);
+                    }
+                    
+                    renderContent();
+                });
+            });
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                currentView = this.dataset.view;
+                renderContent();
+            });
+        });
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            searchQuery = e.target.value;
+            renderContent();
+        });
+
+        // Initial render
+        renderContent();
+    </script>
+</body>
+</html>

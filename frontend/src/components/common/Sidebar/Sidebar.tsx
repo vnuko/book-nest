@@ -58,6 +58,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         onClick={onClose}
       />
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
+        <div className={styles.logo}>
+          <h1>BookSpot</h1>
+          <p>Your literary companion</p>
+        </div>
         <nav className={styles.nav}>
           {navItems.map((item) => (
             <NavLink
@@ -73,6 +77,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             </NavLink>
           ))}
         </nav>
+        <div className={styles.sidebarFooter}>
+          <p>© 2026 BookSpot</p>
+        </div>
       </aside>
     </>
   );

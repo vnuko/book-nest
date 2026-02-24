@@ -1,26 +1,28 @@
 .container {
-  margin-bottom: 3.5rem;
+  margin-bottom: 64px;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.25rem;
+  margin-bottom: 32px;
 }
 
 .title {
-  font-size: 1.375rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--bn-text);
+  margin-bottom: 0;
+  letter-spacing: 0;
 }
 
 .seeMore {
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 500;
-  color: var(--bn-accent);
+  color: var(--bn-text-secondary);
   cursor: pointer;
-  transition: opacity var(--bn-transition-fast);
+  transition: color var(--bn-transition-fast);
   background: none;
   border: none;
   padding: 0;
@@ -28,7 +30,7 @@
 }
 
 .seeMore:hover {
-  opacity: 0.8;
+  color: var(--bn-text);
 }
 
 .scroll {
@@ -40,7 +42,7 @@
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: var(--bn-border) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   scroll-snap-type: x proximity;
   cursor: grab;
 }
@@ -58,12 +60,12 @@
 }
 
 .scroll::-webkit-scrollbar-thumb {
-  background: var(--bn-border);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
 }
 
 .scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--bn-text-muted);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .dragging {
@@ -76,20 +78,24 @@
 }
 
 .itemAuthor {
-  width: 150px;
+  width: 200px;
 }
 
 .itemBook {
-  width: 160px;
+  width: 180px;
 }
 
 .itemSeries {
-  width: 260px;
+  width: 300px;
 }
 
 @media (max-width: 768px) {
   .container {
-    margin-bottom: 2.5rem;
+    margin-bottom: 48px;
+  }
+
+  .title {
+    font-size: 24px;
   }
 
   .scroll {
@@ -97,14 +103,14 @@
   }
 
   .itemAuthor {
-    width: 120px;
+    width: 160px;
   }
 
   .itemBook {
-    width: 140px;
+    width: 150px;
   }
 
   .itemSeries {
-    width: 220px;
+    width: 240px;
   }
 }

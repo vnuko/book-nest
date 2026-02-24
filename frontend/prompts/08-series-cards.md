@@ -1,3 +1,19 @@
+# Change Request: Series Cards Dark Theme
+
+## Context
+Update series card styling to match the book card dark theme.
+
+## Reference
+`frontend/template/index.html` - lines 191-314 (similar to book cards)
+
+## Target Files
+- `frontend/src/components/cards/SeriesCard/SeriesCard.module.css`
+
+## Changes Required
+
+### Update `SeriesCard.module.css`
+
+```css
 .card {
   background-color: rgba(255, 255, 255, 0.05);
   padding: 16px;
@@ -20,7 +36,7 @@
 
 .cover {
   width: 100%;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   border-radius: 0;
@@ -41,7 +57,7 @@
   opacity: 1;
 }
 
-.playButton {
+.collectionButton {
   width: 56px;
   height: 56px;
   background-color: #ffffff;
@@ -56,7 +72,7 @@
   cursor: pointer;
 }
 
-.playButton:hover {
+.collectionButton:hover {
   transform: scale(1.1);
 }
 
@@ -64,7 +80,7 @@
   padding: 0 4px;
 }
 
-.title {
+.name {
   font-size: 16px;
   font-weight: 600;
   color: var(--bn-text);
@@ -74,47 +90,21 @@
   white-space: nowrap;
 }
 
-.authorName {
+.count {
   font-size: 14px;
   color: var(--bn-text-secondary);
-  margin-bottom: 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
+```
 
-.meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 8px;
-}
+## Notes for TSX Updates
+The `SeriesCard.tsx` component may need to be updated to include:
+1. A wrapper div `.coverWrapper` around the cover image
+2. An overlay div `.overlay` inside the cover wrapper
+3. A collection icon button inside the overlay
 
-.year {
-  font-size: 12px;
-  color: #666666;
-}
-
-.rating {
-  font-size: 12px;
-  color: #ffc107;
-}
-
-.favoriteBtn {
-  background: none;
-  border: none;
-  color: var(--bn-text-secondary);
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 0;
-  margin-left: 12px;
-}
-
-.favoriteBtn:hover {
-  transform: scale(1.1);
-}
-
-.favoriteBtn.active {
-  color: #dc3545;
-}
+## Visual Outcome
+- Semi-transparent card background matching book cards
+- Hover effect with lift (translateY -4px)
+- Cover image with shadow, no border radius
+- Overlay with collection icon on hover
+- Consistent styling with book cards

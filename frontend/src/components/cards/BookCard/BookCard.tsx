@@ -33,14 +33,25 @@ export function BookCard({ book }: BookCardProps) {
       tabIndex={0}
       aria-label={`View ${book.title}`}
     >
-      <img
-        src={imageUrl}
-        alt={book.title}
-        className={styles.cover}
-        loading="lazy"
-      />
-      <h3 className={styles.title}>{book.title}</h3>
-      <p className={styles.authorName}>{book.author.name}</p>
+      <div className={styles.coverWrapper}>
+        <img
+          src={imageUrl}
+          alt={book.title}
+          className={styles.cover}
+          loading="lazy"
+        />
+        <div className={styles.overlay}>
+          <button className={styles.playButton} type="button" aria-label="View book">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div className={styles.info}>
+        <h3 className={styles.title}>{book.title}</h3>
+        <p className={styles.authorName}>{book.author.name}</p>
+      </div>
     </div>
   );
 }

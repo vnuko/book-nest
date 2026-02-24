@@ -1,3 +1,19 @@
+# Change Request: Book Cards Dark Theme
+
+## Context
+Update book card styling to match the dark template with overlay effects.
+
+## Reference
+`frontend/template/index.html` - lines 191-314
+
+## Target Files
+- `frontend/src/components/cards/BookCard/BookCard.module.css`
+
+## Changes Required
+
+### Update `BookCard.module.css`
+
+```css
 .card {
   background-color: rgba(255, 255, 255, 0.05);
   padding: 16px;
@@ -118,3 +134,19 @@
 .favoriteBtn.active {
   color: #dc3545;
 }
+```
+
+## Notes for TSX Updates
+The `BookCard.tsx` component may need to be updated to include:
+1. A wrapper div `.coverWrapper` around the cover image
+2. An overlay div `.overlay` inside the cover wrapper
+3. A play button inside the overlay
+4. Meta section with year, rating, and favorite button
+
+## Visual Outcome
+- Semi-transparent card background
+- Hover effect with lift (translateY -4px)
+- Cover image with shadow, no border radius
+- Overlay with play button on hover
+- Title and author with text truncation
+- Meta section at bottom

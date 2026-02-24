@@ -1,3 +1,19 @@
+# Change Request: Search Bar Pill Style
+
+## Context
+Transform the search bar to a pill-shaped design with icon on the left.
+
+## Reference
+`frontend/template/index.html` - lines 119-161
+
+## Target Files
+- `frontend/src/components/common/SearchBar/SearchBar.module.css`
+
+## Changes Required
+
+### Update `SearchBar.module.css`
+
+```css
 .searchBar {
   display: flex;
   align-items: center;
@@ -20,7 +36,7 @@
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
-.searchBar > svg:first-child {
+.searchBar svg {
   position: absolute;
   left: 20px;
   width: 20px;
@@ -79,7 +95,16 @@
     padding: 14px 20px 14px 48px;
   }
 
-  .searchBar > svg:first-child {
+  .searchBar svg {
     left: 16px;
   }
 }
+```
+
+## Visual Outcome
+- Pill-shaped (50px border-radius) search bar
+- Centered with max-width of 700px
+- Icon positioned absolutely on the left
+- Subtle background and border
+- Focus state with glow effect
+- Larger padding for spacious feel
