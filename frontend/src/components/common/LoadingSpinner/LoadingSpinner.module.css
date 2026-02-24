@@ -12,6 +12,10 @@
   color: var(--bn-accent);
 }
 
+.spinner i {
+  font-size: 40px;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

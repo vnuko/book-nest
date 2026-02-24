@@ -54,7 +54,7 @@
   color: var(--bn-text-muted);
 }
 
-.emptyState svg {
+.emptyIcon {
   width: 64px;
   height: 64px;
   margin-bottom: 1rem;
