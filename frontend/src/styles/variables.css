@@ -1,7 +1,6 @@
 :root {
-  --bn-bg: #000000;
-  --bn-bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #000000 50%, #1a1a1a 100%);
-  --bn-sidebar: #000000;
+  --bn-bg: #222d32;
+  --bn-sidebar: #222d32;
   --bn-accent: #ffffff;
   --bn-accent-light: rgba(255, 255, 255, 0.1);
   --bn-text: #ffffff;
