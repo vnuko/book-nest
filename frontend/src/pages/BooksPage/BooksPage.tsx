@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { useBooks, useBookSearch } from '../../hooks';
 import { LoadingSpinner, SearchBar, ErrorMessage } from '../../components/common';
 import { BookCard } from '../../components/cards';
@@ -61,10 +63,7 @@ export function BooksPage() {
         </div>
       ) : (
         <div className={styles.emptyState}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-          </svg>
+          <FontAwesomeIcon icon={faBook} className={styles.emptyIcon} />
           <p>{searchQuery ? 'No books found matching your search' : 'No books available'}</p>
         </div>
       )}

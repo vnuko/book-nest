@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from './SearchBar.module.css';
 
 interface SearchBarProps {
@@ -73,10 +75,7 @@ export function SearchBar({
 
   return (
     <div className={styles.searchBar}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="11" cy="11" r="8" />
-        <path d="m21 21-4.35-4.35" />
-      </svg>
+      <FontAwesomeIcon icon={faMagnifyingGlass} />
       <input
         type="text"
         placeholder={placeholder}
@@ -92,9 +91,7 @@ export function SearchBar({
         aria-label="Clear search"
         type="button"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M18 6L6 18M6 6l12 12" />
-        </svg>
+        <FontAwesomeIcon icon={faXmark} />
       </button>
     </div>
   );

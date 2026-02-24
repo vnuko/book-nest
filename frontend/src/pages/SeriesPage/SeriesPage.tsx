@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { useSeries, useSeriesSearch } from '../../hooks';
 import { LoadingSpinner, SearchBar, ErrorMessage } from '../../components/common';
 import { SeriesCard } from '../../components/cards';
@@ -61,10 +63,7 @@ export function SeriesPage() {
         </div>
       ) : (
         <div className={styles.emptyState}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-          </svg>
+          <FontAwesomeIcon icon={faLayerGroup} className={styles.emptyIcon} />
           <p>{searchQuery ? 'No series found matching your search' : 'No series available'}</p>
         </div>
       )}

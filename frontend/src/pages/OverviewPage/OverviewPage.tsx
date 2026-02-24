@@ -1,4 +1,6 @@
 import { useAuthors, useBooks, useSeries } from '../../hooks';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGrip } from '@fortawesome/free-solid-svg-icons';
 import { LoadingSpinner } from '../../components/common';
 import { AuthorCard, BookCard, SeriesCard } from '../../components/cards';
 import { ROUTES } from '../../utils/routes';
@@ -103,12 +105,7 @@ export function OverviewPage() {
 
       {authors.length === 0 && books.length === 0 && series.length === 0 && (
         <div className={styles.emptyState}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-          </svg>
+          <FontAwesomeIcon icon={faGrip} className={styles.emptyIcon} />
           <p>Your library is empty. Start by indexing some books!</p>
         </div>
       )}

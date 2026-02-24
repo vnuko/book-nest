@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useAuthors, useAuthorSearch } from '../../hooks';
 import { LoadingSpinner, SearchBar, ErrorMessage } from '../../components/common';
 import { AuthorCard } from '../../components/cards';
@@ -61,10 +63,7 @@ export function AuthorsPage() {
         </div>
       ) : (
         <div className={styles.emptyState}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
+          <FontAwesomeIcon icon={faUsers} className={styles.emptyIcon} />
           <p>{searchQuery ? 'No authors found matching your search' : 'No authors available'}</p>
         </div>
       )}

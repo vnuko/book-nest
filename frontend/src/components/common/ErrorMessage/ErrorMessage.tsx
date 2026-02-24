@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import styles from './ErrorMessage.module.css';
 
 interface ErrorMessageProps {
@@ -15,10 +17,7 @@ export function ErrorMessage({
 }: ErrorMessageProps) {
   return (
     <div className={styles.container}>
-      <svg className={styles.icon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 8v4M12 16h.01" />
-      </svg>
+      <FontAwesomeIcon icon={faCircleExclamation} className={styles.icon} />
       <h3 className={styles.title}>{title}</h3>
       <p className={styles.message}>{message}</p>
       {onRetry && (

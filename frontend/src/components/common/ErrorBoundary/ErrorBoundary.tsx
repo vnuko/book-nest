@@ -1,4 +1,6 @@
 import { Component, type ReactNode, type ErrorInfo } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
   children: ReactNode;
@@ -40,16 +42,10 @@ export class ErrorBoundary extends Component<Props, State> {
           textAlign: 'center',
           color: 'var(--bn-text-muted)',
         }}>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
+          <FontAwesomeIcon 
+            icon={faCircleExclamation} 
             style={{ width: '64px', height: '64px', marginBottom: '1rem', opacity: 0.5 }}
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 8v4M12 16h.01" />
-          </svg>
+          />
           <h2 style={{ marginBottom: '0.5rem' }}>Something went wrong</h2>
           <p style={{ marginBottom: '1.5rem' }}>An unexpected error occurred.</p>
           <button

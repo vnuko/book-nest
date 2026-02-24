@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { ROUTES } from '../../../utils/routes';
 import { getImageUrl } from '../../../api/client';
 import type { Book } from '../../../types';
@@ -42,9 +44,7 @@ export function BookCard({ book }: BookCardProps) {
         />
         <div className={styles.overlay}>
           <button className={styles.playButton} type="button" aria-label="View book">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-              <path d="M8 5v14l11-7z" />
-            </svg>
+            <FontAwesomeIcon icon={faPlay} />
           </button>
         </div>
       </div>
