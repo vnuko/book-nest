@@ -7,10 +7,13 @@ import './styles/global.css';
 import './styles/utilities.css';
 import App from './App';
 
-const rootElement = document.getElementById('root')!;
 const initialLoader = document.getElementById('initial-loader');
+if (initialLoader) {
+  initialLoader.classList.add('hidden');
+  setTimeout(() => initialLoader.remove(), 300);
+}
 
-createRoot(rootElement).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
@@ -19,10 +22,3 @@ createRoot(rootElement).render(
     </ErrorBoundary>
   </StrictMode>
 );
-
-if (initialLoader) {
-  requestAnimationFrame(() => {
-    initialLoader.classList.add('hidden');
-    setTimeout(() => initialLoader.remove(), 300);
-  });
-}
