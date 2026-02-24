@@ -4,6 +4,7 @@ import { LoadingSpinner } from '../../components/common';
 import { BackLink } from '../../components/common/BackLink';
 import { BookCard } from '../../components/cards';
 import { ROUTES } from '../../utils/routes';
+import { getImageUrl } from '../../api/client';
 import styles from './AuthorDetailPage.module.css';
 
 export function AuthorDetailPage() {
@@ -34,7 +35,7 @@ export function AuthorDetailPage() {
 
   const author = authorData.data;
   const books = booksData?.data || [];
-  const avatarUrl = `/api/files/images/authors/${author.id}`;
+  const avatarUrl = getImageUrl('authors', author.id);
 
   return (
     <div className="page-content">

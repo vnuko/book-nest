@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import { initDb } from './db/index.js';
 import { config } from './config/index.js';
@@ -10,8 +9,6 @@ import { logger } from './utils/logger.js';
 import { displaySplash } from './utils/splash.js';
 import apiRoutes from './api/routes/index.js';
 import { notFoundHandler, errorHandler } from './api/middleware/errorHandler.js';
-
-dotenv.config();
 
 const app = express();
 
@@ -24,8 +21,14 @@ async function initialize(): Promise<void> {
   logger.info('Book Nest initialized successfully');
 }
 
-app.use(helmet());
-app.use(cors());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
+app.use(cors({
+  origin: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

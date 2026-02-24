@@ -22,27 +22,53 @@ export interface ConversionOptions {
 const FORMAT_PRIORITY: EbookFormat[] = ['epub', 'mobi', 'azw3', 'txt', 'pdf'];
 
 class CalibreService {
-  private calibrePath: string;
+  private calibrePath: string | null = null;
   private defaultTimeout: number;
+  private checkedAvailability: boolean = false;
 
   constructor() {
-    this.calibrePath = config.calibre.path;
     this.defaultTimeout = 120000;
   }
 
+  private findCalibre(): string | null {
+    const envPath = config.calibre.path;
+    if (fs.existsSync(envPath)) {
+      return envPath;
+    }
+    for (const fallback of config.calibre.fallbackPaths || []) {
+      if (fs.existsSync(fallback)) {
+        return fallback;
+      }
+    }
+    return null;
+  }
+
   private isCalibreAvailable(): boolean {
-    return fs.existsSync(this.calibrePath);
+    if (this.checkedAvailability) {
+      return this.calibrePath !== null;
+    }
+    this.calibrePath = this.findCalibre();
+    this.checkedAvailability = true;
+    if (!this.calibrePath) {
+      logger.warn('Calibre not found. Format conversion (mobi, txt) will be skipped.', {
+        searched: [config.calibre.path, ...(config.calibre.fallbackPaths || [])],
+        hint: 'Install Calibre or set CALIBRE_PATH in .env',
+      });
+    } else {
+      logger.info('Calibre found', { path: this.calibrePath });
+    }
+    return this.calibrePath !== null;
   }
 
   async convert(options: ConversionOptions): Promise<ConversionResult> {
     const startTime = Date.now();
     const { inputPath, outputFormat, outputPath, timeout = this.defaultTimeout } = options;
 
-    if (!this.isCalibreAvailable()) {
+    if (!this.isCalibreAvailable() || !this.calibrePath) {
       return {
         success: false,
         outputPath: null,
-        error: `Calibre not found at ${this.calibrePath}`,
+        error: 'Calibre not installed. Set CALIBRE_PATH in .env',
         duration: 0,
       };
     }
@@ -107,21 +133,22 @@ class CalibreService {
     outputPath: string,
     timeout: number,
   ): Promise<void> {
+    const calibrePath = this.calibrePath!;
     return new Promise((resolve, reject) => {
       const args = [inputPath, outputPath];
 
-      const proc = spawn(this.calibrePath, args, {
+      const proc = spawn(calibrePath, args, {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
       let stdout = '';
       let stderr = '';
 
-      proc.stdout.on('data', (data) => {
+      proc.stdout.on('data', (data: Buffer) => {
         stdout += data.toString();
       });
 
-      proc.stderr.on('data', (data) => {
+      proc.stderr.on('data', (data: Buffer) => {
         stderr += data.toString();
       });
 
@@ -130,12 +157,12 @@ class CalibreService {
         reject(new Error(`Conversion timed out after ${timeout}ms`));
       }, timeout);
 
-      proc.on('error', (error) => {
+      proc.on('error', (error: Error) => {
         clearTimeout(timeoutId);
         reject(error);
       });
 
-      proc.on('close', (code) => {
+      proc.on('close', (code: number | null) => {
         clearTimeout(timeoutId);
 
         if (code === 0) {

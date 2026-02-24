@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../utils/routes';
+import { getImageUrl } from '../../../api/client';
 import type { Series } from '../../../types';
 import styles from './SeriesCard.module.css';
 
@@ -21,7 +22,7 @@ export function SeriesCard({ series }: SeriesCardProps) {
     }
   };
 
-  const imageUrl = `/api/files/images/series/${series.id}`;
+  const imageUrl = getImageUrl('series', series.id);
 
   return (
     <div

@@ -125,6 +125,8 @@ RULES:
       userPrompt
     );
 
+    response.results = response.results || [];
+
     logger.info('=== STEP 1: NAME RESOLUTION - GROQ RESPONSE ===', {
       inputCount: inputs.length,
       outputCount: response.results.length,
@@ -188,6 +190,10 @@ RULES:
 7. Always return valid JSON`;
 
     const response = await this.callAgent<MetadataResolverOutput>(systemPrompt, userPrompt);
+
+    response.authors = response.authors || [];
+    response.books = response.books || [];
+    response.series = response.series || [];
 
     logger.info('=== STEP 3: METADATA RESOLUTION - GROQ RESPONSE ===', {
       inputAuthors: input.authors.length,

@@ -4,7 +4,12 @@ import { logger } from '../utils/logger.js';
 
 class ImageService {
   private maxImageSize = 5 * 1024 * 1024;
+  private minImageSize = 500;
   private allowedFormats = ['jpg', 'jpeg', 'png', 'webp'];
+  private placeholderSignatures = [
+    Buffer.from('GIF89a'),
+    Buffer.from('GIF87a'),
+  ];
 
   private isValidImageUrl(url: string): boolean {
     try {
@@ -24,6 +29,15 @@ class ImageService {
     }
 
     return 'jpg';
+  }
+
+  private isPlaceholderImage(buffer: Buffer): boolean {
+    for (const sig of this.placeholderSignatures) {
+      if (buffer.subarray(0, sig.length).equals(sig) && buffer.length < 100) {
+        return true;
+      }
+    }
+    return false;
   }
 
   async downloadImage(url: string, targetPath: string): Promise<boolean> {
@@ -70,6 +84,23 @@ class ImageService {
 
       if (buffer.length > this.maxImageSize) {
         logger.warn('Image download failed - buffer too large', {
+          url,
+          bufferSize: buffer.length,
+        });
+        return false;
+      }
+
+      if (buffer.length < this.minImageSize) {
+        logger.warn('Image download failed - image too small, likely placeholder', {
+          url,
+          bufferSize: buffer.length,
+          minSize: this.minImageSize,
+        });
+        return false;
+      }
+
+      if (this.isPlaceholderImage(buffer)) {
+        logger.warn('Image download failed - detected placeholder image', {
           url,
           bufferSize: buffer.length,
         });

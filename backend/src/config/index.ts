@@ -1,5 +1,12 @@
 import dotenv from 'dotenv';
-dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '..', '..', '..');
+
+dotenv.config({ path: path.join(projectRoot, '.env') });
 
 export const config = {
   server: {
@@ -27,6 +34,12 @@ export const config = {
   },
   calibre: {
     path: process.env.CALIBRE_PATH || '/usr/bin/ebook-convert',
+    fallbackPaths: [
+      '/usr/bin/ebook-convert',
+      '/Applications/calibre.app/Contents/MacOS/ebook-convert',
+      'C:\\Program Files\\Calibre\\ebook-convert.exe',
+      'C:\\Program Files (x86)\\Calibre\\ebook-convert.exe',
+    ],
   },
 };
 

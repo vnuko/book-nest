@@ -3,6 +3,7 @@ import { useBook } from '../../hooks';
 import { LoadingSpinner } from '../../components/common';
 import { BackLink } from '../../components/common/BackLink';
 import { ROUTES } from '../../utils/routes';
+import { getImageUrl, API_BASE } from '../../api/client';
 import type { BookFile } from '../../types';
 import styles from './BookDetailPage.module.css';
 
@@ -31,7 +32,7 @@ function formatFileSize(bytes: number | null): string {
 }
 
 function DownloadButton({ file, bookId }: { file: BookFile; bookId: string }) {
-  const downloadUrl = `/api/files/books/${bookId}/download/${file.format}`;
+  const downloadUrl = `${API_BASE}/api/files/books/${bookId}/download/${file.format}`;
 
   return (
     <a
@@ -76,7 +77,7 @@ export function BookDetailPage() {
   }
 
   const book = data.data;
-  const coverUrl = `/api/files/images/books/${book.id}`;
+  const coverUrl = getImageUrl('books', book.id);
 
   return (
     <div className="page-content">

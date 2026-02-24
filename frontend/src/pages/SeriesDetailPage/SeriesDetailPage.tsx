@@ -4,6 +4,7 @@ import { LoadingSpinner } from '../../components/common';
 import { BackLink } from '../../components/common/BackLink';
 import { BookCard } from '../../components/cards';
 import { ROUTES } from '../../utils/routes';
+import { getImageUrl } from '../../api/client';
 import styles from './SeriesDetailPage.module.css';
 
 export function SeriesDetailPage() {
@@ -36,7 +37,7 @@ export function SeriesDetailPage() {
   const books = booksData?.data || [];
 
   const bannerUrl = books.length > 0
-    ? `/api/files/images/books/${books[0].id}`
+    ? getImageUrl('books', books[0].id)
     : '/placeholder-series.jpg';
 
   return (

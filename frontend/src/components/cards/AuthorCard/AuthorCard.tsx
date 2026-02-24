@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../utils/routes';
+import { getImageUrl } from '../../../api/client';
 import type { Author } from '../../../types';
 import styles from './AuthorCard.module.css';
 
@@ -22,7 +23,7 @@ export function AuthorCard({ author, large = false }: AuthorCardProps) {
     }
   };
 
-  const imageUrl = `/api/files/images/authors/${author.id}`;
+  const imageUrl = getImageUrl('authors', author.id);
 
   return (
     <div

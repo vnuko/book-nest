@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../utils/routes';
+import { getImageUrl } from '../../../api/client';
 import type { Book } from '../../../types';
 import styles from './BookCard.module.css';
 
@@ -21,7 +22,7 @@ export function BookCard({ book }: BookCardProps) {
     }
   };
 
-  const imageUrl = `/api/files/images/books/${book.id}`;
+  const imageUrl = getImageUrl('books', book.id);
 
   return (
     <div

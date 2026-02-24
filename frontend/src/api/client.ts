@@ -1,4 +1,8 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+export function getImageUrl(type: 'authors' | 'books' | 'series', id: string): string {
+  return `${API_BASE}/api/files/images/${type}/${id}`;
+}
 
 export class ApiError extends Error {
   status: number;

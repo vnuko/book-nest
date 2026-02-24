@@ -4,7 +4,9 @@ interface OpenLibraryAuthorSearchResult {
   docs: Array<{
     key: string;
     name: string;
+    birth_date?: string;
     photos?: number[];
+    work_count?: number;
   }>;
 }
 
@@ -42,7 +44,17 @@ class ImageSearchService {
       const data: OpenLibraryAuthorSearchResult = await response.json();
 
       if (data.docs && data.docs.length > 0) {
-        const author = data.docs[0];
+        const authorWithBirthDate = data.docs.find((a) => a.birth_date);
+        const author = authorWithBirthDate || data.docs[0];
+
+        if (authorWithBirthDate) {
+          logger.info('=== STEP 2: Found author with birth_date (higher confidence) ===', {
+            authorName,
+            authorKey: author.key,
+            birthDate: author.birth_date,
+            workCount: author.work_count,
+          });
+        }
 
         if (author.photos && author.photos.length > 0) {
           const photoId = author.photos[0];
