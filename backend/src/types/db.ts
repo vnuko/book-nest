@@ -43,6 +43,7 @@ export interface Book {
   description: string | null;
   isbn: string | null;
   firstPublishYear: number | null;
+  liked: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -110,6 +111,7 @@ export interface CreateBookInput {
   description?: string | null;
   isbn?: string | null;
   firstPublishYear?: number | null;
+  liked?: boolean;
 }
 
 export interface CreateFileInput {

@@ -26,6 +26,7 @@ export interface BookResponse {
   description: string | null;
   isbn: string | null;
   firstPublishYear: number | null;
+  liked: boolean;
   author: {
     id: string;
     name: string;
