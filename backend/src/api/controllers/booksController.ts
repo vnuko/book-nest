@@ -165,6 +165,7 @@ async function mapBookToResponse(
     description: book.description,
     isbn: book.isbn,
     firstPublishYear: book.firstPublishYear,
+    liked: Boolean(book.liked),
     author: author
       ? { id: author.id, name: author.name, slug: author.slug }
       : { id: '', name: 'Unknown', slug: 'unknown' },

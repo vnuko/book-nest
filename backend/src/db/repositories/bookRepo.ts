@@ -33,7 +33,7 @@ const createStmt = db.prepare<
   [
     Omit<
       CreateBookInput,
-      'originalTitle' | 'seriesId' | 'seriesOrder' | 'description' | 'isbn' | 'firstPublishYear'
+      'originalTitle' | 'seriesId' | 'seriesOrder' | 'description' | 'isbn' | 'firstPublishYear' | 'liked'
     > & {
       originalTitle: string | null;
       seriesId: string | null;
@@ -41,12 +41,13 @@ const createStmt = db.prepare<
       description: string | null;
       isbn: string | null;
       firstPublishYear: number | null;
+      liked: number;
     },
   ],
   Book
 >(`
-  INSERT INTO books (id, title, originalTitle, slug, authorId, seriesId, seriesOrder, description, isbn, firstPublishYear)
-  VALUES (@id, @title, @originalTitle, @slug, @authorId, @seriesId, @seriesOrder, @description, @isbn, @firstPublishYear)
+  INSERT INTO books (id, title, originalTitle, slug, authorId, seriesId, seriesOrder, description, isbn, firstPublishYear, liked)
+  VALUES (@id, @title, @originalTitle, @slug, @authorId, @seriesId, @seriesOrder, @description, @isbn, @firstPublishYear, @liked)
   RETURNING *
 `);
 
@@ -63,6 +64,7 @@ const updateStmt = db.prepare<
       description?: string | null;
       isbn?: string | null;
       firstPublishYear?: number | null;
+      liked?: number;
       updatedAt: string;
     },
   ],
@@ -78,6 +80,7 @@ const updateStmt = db.prepare<
     description = COALESCE(@description, description),
     isbn = COALESCE(@isbn, isbn),
     firstPublishYear = COALESCE(@firstPublishYear, firstPublishYear),
+    liked = COALESCE(@liked, liked),
     updatedAt = @updatedAt
   WHERE id = @id
   RETURNING *
@@ -93,6 +96,10 @@ const countStmt = db.prepare<[], { count: number }>(`
 
 const findRecentStmt = db.prepare<[{ limit: number }], Book>(`
   SELECT * FROM books ORDER BY createdAt DESC LIMIT @limit
+`);
+
+const toggleLikeStmt = db.prepare<[{ id: string; liked: number; updatedAt: string }], Book>(`
+  UPDATE books SET liked = @liked, updatedAt = @updatedAt WHERE id = @id RETURNING *
 `);
 
 export const bookRepo = {
@@ -132,6 +139,7 @@ export const bookRepo = {
       description: input.description ?? null,
       isbn: input.isbn ?? null,
       firstPublishYear: input.firstPublishYear ?? null,
+      liked: input.liked ? 1 : 0,
     })!;
   },
 
@@ -147,6 +155,7 @@ export const bookRepo = {
       description: input.description,
       isbn: input.isbn,
       firstPublishYear: input.firstPublishYear,
+      liked: input.liked !== undefined ? (input.liked ? 1 : 0) : undefined,
       updatedAt: new Date().toISOString(),
     })!;
   },
@@ -162,5 +171,13 @@ export const bookRepo = {
 
   findRecent(limit: number): Book[] {
     return findRecentStmt.all({ limit });
+  },
+
+  toggleLike(id: string, liked: boolean): Book | undefined {
+    return toggleLikeStmt.get({
+      id,
+      liked: liked ? 1 : 0,
+      updatedAt: new Date().toISOString(),
+    });
   },
 };

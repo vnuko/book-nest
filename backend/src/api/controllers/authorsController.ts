@@ -71,6 +71,7 @@ async function getAuthorBooks(req: Request, res: Response, next: NextFunction): 
           description: book.description,
           isbn: book.isbn,
           firstPublishYear: book.firstPublishYear,
+          liked: Boolean(book.liked),
           author: { id: author.id, name: author.name, slug: author.slug },
           series: getSeriesInfo(book.seriesId),
           seriesOrder: book.seriesOrder,
