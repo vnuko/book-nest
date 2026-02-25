@@ -57,6 +57,7 @@ export function initDb(): void {
       description TEXT,
       isbn TEXT,
       firstPublishYear INTEGER,
+      liked INTEGER DEFAULT 0,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (authorId) REFERENCES authors(id) ON DELETE CASCADE,
