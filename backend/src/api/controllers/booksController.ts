@@ -1,4 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
+import path from 'path';
+import fs from 'fs-extra';
+import { config } from '../../config/index.js';
 import { bookRepo, authorRepo, seriesRepo, fileRepo } from '../../db/repositories/index.js';
 import {
   parsePagination,
@@ -219,6 +222,35 @@ async function updateBook(req: Request, res: Response, next: NextFunction): Prom
   }
 }
 
+async function deleteBook(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+
+    const book = bookRepo.findById(id);
+    if (!book) {
+      throwNotFound('Book', id);
+    }
+
+    const author = authorRepo.findById(book.authorId);
+
+    const bookFolderPath = path.join(
+      config.paths.ebooks,
+      author?.slug || 'unknown',
+      book.slug
+    );
+
+    if (await fs.pathExists(bookFolderPath)) {
+      await fs.remove(bookFolderPath);
+    }
+
+    bookRepo.delete(id);
+
+    res.json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function mapBookToResponse(
   book: NonNullable<ReturnType<typeof bookRepo.findById>>,
 ): Promise<BookResponse> {
@@ -256,4 +288,5 @@ export const booksController = {
   getBooksBySeries,
   toggleBookLike,
   updateBook,
+  deleteBook,
 };
