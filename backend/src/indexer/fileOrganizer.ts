@@ -292,6 +292,46 @@ class FileOrganizer {
 
     return results;
   }
+
+  async cleanEmptyFolders(
+    authorSlugs: string[],
+    sourceBaseDir: string
+  ): Promise<{ cleaned: string[]; failed: string[] }> {
+    const cleaned: string[] = [];
+    const failed: string[] = [];
+
+    for (const slug of authorSlugs) {
+      const authorDir = path.join(sourceBaseDir, slug);
+
+      try {
+        const exists = await fs.pathExists(authorDir);
+        if (!exists) {
+          continue;
+        }
+
+        const entries = await fs.readdir(authorDir);
+        
+        if (entries.length === 0) {
+          await fs.rmdir(authorDir);
+          cleaned.push(slug);
+          logger.debug('Removed empty author folder', { slug, path: authorDir });
+        }
+      } catch (error) {
+        failed.push(slug);
+        logger.warn('Failed to clean author folder', { slug, error: (error as Error).message });
+      }
+    }
+
+    if (cleaned.length > 0 || failed.length > 0) {
+      logger.info('Empty folder cleanup completed', {
+        total: authorSlugs.length,
+        cleaned: cleaned.length,
+        failed: failed.length,
+      });
+    }
+
+    return { cleaned, failed };
+  }
 }
 
 export const fileOrganizer = new FileOrganizer();

@@ -702,6 +702,31 @@ class BatchProcessor {
           error: failure.error,
         });
       }
+
+      if (successful.length > 0) {
+        const authorSlugs = [
+          ...new Set(
+            successful
+              .filter((r) => r.originalPath)
+              .map((r) => {
+                const parts = r.originalPath.replace(/\\/g, '/').split('/');
+                const sourceIndex = parts.indexOf('source');
+                return sourceIndex >= 0 && parts.length > sourceIndex + 1 ? parts[sourceIndex + 1] : null;
+              })
+              .filter((slug): slug is string => slug !== null)
+          ),
+        ];
+
+        if (authorSlugs.length > 0) {
+          const cleanupResult = await fileOrganizer.cleanEmptyFolders(authorSlugs, sourceBaseDir);
+          if (cleanupResult.cleaned.length > 0) {
+            batchLogger.info('Cleaned empty author folders', {
+              count: cleanupResult.cleaned.length,
+              slugs: cleanupResult.cleaned,
+            });
+          }
+        }
+      }
     } catch (error) {
       batchLogger.error('Batch file move failed', error as Error, {
         fileCount: filePaths.length,
