@@ -404,6 +404,7 @@ class BatchProcessor {
       authorName: string;
       authorSlug: string;
       bookSlug: string;
+      seriesSlug: string;
     }>;
     series: Array<{ name: string; englishName: string; authorName: string; authorSlug: string }>;
   } {
@@ -415,6 +416,7 @@ class BatchProcessor {
       authorName: string;
       authorSlug: string;
       bookSlug: string;
+      seriesSlug: string;
     }> = [];
     const series: Array<{
       name: string;
@@ -439,6 +441,7 @@ class BatchProcessor {
         authorName: result.author.normalizedName,
         authorSlug: result.author.slug,
         bookSlug: result.title.slug,
+        seriesSlug: result.series.slug || '',
       });
 
       if (result.series.slug) {

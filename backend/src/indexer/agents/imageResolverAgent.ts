@@ -25,6 +25,7 @@ class ImageResolverAgent {
 
     const authorResults = new Map<string, { imageUrl: string | null; confidence: number }>();
     const bookResults = new Map<string, { imageUrl: string | null; confidence: number }>();
+    const seriesResults = new Map<string, { imageUrl: string | null; confidence: number }>();
 
     for (const author of input.authors) {
       batchLogger.info('Searching author image', { authorName: author.name });
@@ -87,6 +88,7 @@ class ImageResolverAgent {
     return {
       authors: authorResults,
       books: bookResults,
+      series: seriesResults,
     };
   }
 
