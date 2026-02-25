@@ -45,7 +45,6 @@ export interface MetadataBookOutput {
   author: string;
   title: string;
   description: string | null;
-  isbn: string | null;
   firstPublishYear: number | null;
 }
 

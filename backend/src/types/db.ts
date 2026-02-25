@@ -41,7 +41,6 @@ export interface Book {
   seriesId: string | null;
   seriesOrder: number | null;
   description: string | null;
-  isbn: string | null;
   firstPublishYear: number | null;
   liked: boolean;
   createdAt: string;
@@ -109,7 +108,6 @@ export interface CreateBookInput {
   seriesId?: string | null;
   seriesOrder?: number | null;
   description?: string | null;
-  isbn?: string | null;
   firstPublishYear?: number | null;
   liked?: boolean;
 }

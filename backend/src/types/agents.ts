@@ -99,7 +99,6 @@ export interface BookMetadata {
   authorSlug: string;
   bookSlug: string;
   description: string | null;
-  isbn: string | null;
   firstPublishYear: number | null;
 }
 

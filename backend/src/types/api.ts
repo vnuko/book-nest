@@ -24,7 +24,6 @@ export interface BookResponse {
   originalTitle: string | null;
   slug: string;
   description: string | null;
-  isbn: string | null;
   firstPublishYear: number | null;
   liked: boolean;
   author: {
