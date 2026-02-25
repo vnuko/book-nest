@@ -82,6 +82,7 @@ const options: swaggerJsdoc.Options = {
             description: { type: 'string', nullable: true },
             isbn: { type: 'string', nullable: true },
             firstPublishYear: { type: 'integer', nullable: true },
+            liked: { type: 'boolean', example: false },
             author: {
               type: 'object',
               properties: {
