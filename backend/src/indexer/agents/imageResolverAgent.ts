@@ -76,7 +76,10 @@ class ImageResolverAgent {
       });
     }
 
-    await this.storeResults(input.batchId, authorResults, bookResults);
+    const seriesImageResults = await this.processSeriesImages(input.books, bookResults, batchLogger);
+    seriesImageResults.forEach((value, key) => seriesResults.set(key, value));
+
+    await this.storeResults(input.batchId, authorResults, bookResults, seriesResults);
 
     batchLogger.info('=== STEP 2: IMAGE RESOLUTION - COMPLETED ===', {
       authorsProcessed: input.authors.length,
@@ -106,16 +109,68 @@ class ImageResolverAgent {
     await fs.copy(defaultPath, targetPath, { overwrite: true });
   }
 
+  private async processSeriesImages(
+    books: Array<{
+      title: string;
+      authorName: string;
+      authorSlug: string;
+      bookSlug: string;
+      seriesSlug?: string | null;
+    }>,
+    bookResults: Map<string, { imageUrl: string | null; confidence: number }>,
+    batchLogger: ReturnType<typeof createBatchLogger>
+  ): Promise<Map<string, { imageUrl: string | null; confidence: number }>> {
+    const seriesResults = new Map<string, { imageUrl: string | null; confidence: number }>();
+
+    const seriesFirstBook = new Map<string, { authorSlug: string; seriesSlug: string; bookSlug: string }>();
+
+    for (const book of books) {
+      if (!book.seriesSlug) continue;
+
+      const seriesKey = `${book.authorSlug}/${book.seriesSlug}`;
+      if (!seriesFirstBook.has(seriesKey)) {
+        seriesFirstBook.set(seriesKey, {
+          authorSlug: book.authorSlug,
+          seriesSlug: book.seriesSlug,
+          bookSlug: book.bookSlug,
+        });
+      }
+    }
+
+    for (const [seriesKey, info] of seriesFirstBook) {
+      const bookImageKey = `${info.authorSlug}/${info.bookSlug}`;
+      const bookImageResult = bookResults.get(bookImageKey);
+
+      const targetPath = path.join(this.ebooksDir, info.authorSlug, `${info.seriesSlug}.jpg`);
+      await fs.ensureDir(path.dirname(targetPath));
+
+      if (bookImageResult?.imageUrl && (await fs.pathExists(bookImageResult.imageUrl))) {
+        await fs.copy(bookImageResult.imageUrl, targetPath, { overwrite: true });
+        seriesResults.set(seriesKey, { imageUrl: targetPath, confidence: 0.9 });
+        batchLogger.info('Series image created from book cover', { seriesKey, source: bookImageResult.imageUrl });
+      } else {
+        await this.copyDefaultBookCover(targetPath);
+        seriesResults.set(seriesKey, { imageUrl: targetPath, confidence: 0.5 });
+        batchLogger.info('Using default image for series', { seriesKey });
+      }
+    }
+
+    return seriesResults;
+  }
+
   private async storeResults(
     batchId: string,
     authorResults: ImageResolverAgentResult['authors'],
-    bookResults: ImageResolverAgentResult['books']
+    bookResults: ImageResolverAgentResult['books'],
+    seriesResults: ImageResolverAgentResult['series']
   ): Promise<void> {
     const summary = {
       authorCount: authorResults.size,
       bookCount: bookResults.size,
+      seriesCount: seriesResults.size,
       authorsWithImages: authorResults.size,
       booksWithImages: bookResults.size,
+      seriesWithImages: seriesResults.size,
     };
 
     const items = batchRepo.findItemsByBatchId(batchId);
