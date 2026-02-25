@@ -158,4 +158,67 @@ router.get('/:id/books', authorsController.getAuthorBooks);
  */
 router.get('/:id/series', authorsController.getAuthorSeries);
 
+/**
+ * @openapi
+ * /api/authors/{id}:
+ *   put:
+ *     summary: Update author details
+ *     tags: [Authors]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: Author ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Author name (required, non-empty)
+ *               bio:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Author biography (empty string sets to null)
+ *               dateOfBirth:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Date of birth (e.g., "1980-05-15")
+ *               nationality:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Author's nationality (empty string sets to null)
+ *     responses:
+ *       200:
+ *         description: Updated author
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Author'
+ *       400:
+ *         description: Invalid input (e.g., empty name)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Author not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.put('/:id', authorsController.updateAuthor);
+
 export default router;

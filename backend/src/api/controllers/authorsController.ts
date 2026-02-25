@@ -7,6 +7,7 @@ import {
 } from '../../utils/index.js';
 import { ApiErrorClass, throwNotFound } from '../middleware/errorHandler.js';
 import type { ApiResponse, AuthorResponse, BookResponse } from '../../types/api.js';
+import type { CreateAuthorInput } from '../../types/db.js';
 
 async function getAuthors(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -150,6 +151,52 @@ async function searchAuthors(req: Request, res: Response, next: NextFunction): P
   }
 }
 
+async function updateAuthor(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+    const { name, bio, dateOfBirth, nationality } = req.body;
+
+    if (name === undefined) {
+      throw new ApiErrorClass('INVALID_INPUT', 'name is required', 400);
+    }
+
+    if (typeof name !== 'string' || name.trim().length === 0) {
+      throw new ApiErrorClass('INVALID_INPUT', 'name must be a non-empty string', 400);
+    }
+
+    const author = authorRepo.findById(id);
+    if (!author) {
+      throwNotFound('Author', id);
+    }
+
+    const updateData: Partial<Omit<CreateAuthorInput, 'id'>> = {
+      name: name.trim(),
+    };
+
+    if (bio !== undefined) {
+      updateData.bio = bio === '' ? null : bio;
+    }
+
+    if (dateOfBirth !== undefined) {
+      updateData.dateOfBirth = dateOfBirth === null ? null : String(dateOfBirth);
+    }
+
+    if (nationality !== undefined) {
+      updateData.nationality = nationality === '' || nationality === null ? null : nationality;
+    }
+
+    const updatedAuthor = authorRepo.update(id, updateData);
+
+    const response: ApiResponse<AuthorResponse> = {
+      data: mapAuthorToResponse(updatedAuthor),
+    };
+
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+}
+
 function mapAuthorToResponse(
   author: NonNullable<ReturnType<typeof authorRepo.findById>>,
 ): AuthorResponse {
@@ -182,4 +229,5 @@ export const authorsController = {
   getAuthorBooks,
   getAuthorSeries,
   searchAuthors,
+  updateAuthor,
 };
