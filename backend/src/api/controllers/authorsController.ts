@@ -1,4 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
+import fs from 'fs-extra';
+import path from 'path';
 import { authorRepo, bookRepo, seriesRepo, fileRepo } from '../../db/repositories/index.js';
 import {
   parsePagination,
@@ -6,6 +8,7 @@ import {
   buildPaginationResult,
 } from '../../utils/index.js';
 import { ApiErrorClass, throwNotFound } from '../middleware/errorHandler.js';
+import { config } from '../../config/index.js';
 import type { ApiResponse, AuthorResponse, BookResponse } from '../../types/api.js';
 import type { CreateAuthorInput } from '../../types/db.js';
 
@@ -197,6 +200,46 @@ async function updateAuthor(req: Request, res: Response, next: NextFunction): Pr
   }
 }
 
+async function deleteAuthor(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+
+    const author = authorRepo.findById(id);
+    if (!author) {
+      throwNotFound('Author', id);
+    }
+
+    const books = bookRepo.findByAuthorId(id, 1000, 0);
+    if (books.length > 0) {
+      throw new ApiErrorClass(
+        'CONFLICT',
+        `Cannot delete author with ${books.length} book(s) attached. Delete or move the books first.`,
+        400
+      );
+    }
+
+    const seriesList = seriesRepo.findByAuthorId(id);
+    if (seriesList.length > 0) {
+      throw new ApiErrorClass(
+        'CONFLICT',
+        `Cannot delete author with ${seriesList.length} series attached. Delete the series first.`,
+        400
+      );
+    }
+
+    const authorFolderPath = path.join(config.paths.ebooks, author.slug);
+    if (await fs.pathExists(authorFolderPath)) {
+      await fs.remove(authorFolderPath);
+    }
+
+    authorRepo.delete(id);
+
+    res.json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function mapAuthorToResponse(
   author: NonNullable<ReturnType<typeof authorRepo.findById>>,
 ): AuthorResponse {
@@ -230,4 +273,5 @@ export const authorsController = {
   getAuthorSeries,
   searchAuthors,
   updateAuthor,
+  deleteAuthor,
 };

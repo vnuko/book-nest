@@ -221,4 +221,44 @@ router.get('/:id/series', authorsController.getAuthorSeries);
  */
 router.put('/:id', authorsController.updateAuthor);
 
+/**
+ * @openapi
+ * /api/authors/{id}:
+ *   delete:
+ *     summary: Delete an author
+ *     description: Deletes an author only if they have no books or series. Also deletes the author folder including images.
+ *     tags: [Authors]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: Author ID
+ *     responses:
+ *       200:
+ *         description: Author deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *       400:
+ *         description: Cannot delete author with books or series attached
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Author not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.delete('/:id', authorsController.deleteAuthor);
+
 export default router;
