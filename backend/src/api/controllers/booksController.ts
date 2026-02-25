@@ -183,7 +183,7 @@ async function toggleBookLike(req: Request, res: Response, next: NextFunction): 
 async function updateBook(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { id } = req.params;
-    const { title, description, firstPublishYear } = req.body;
+    const { title, description, firstPublishYear, authorId, seriesId, seriesOrder } = req.body;
 
     if (title === undefined) {
       throw new ApiErrorClass('INVALID_INPUT', 'title is required', 400);
@@ -208,6 +208,51 @@ async function updateBook(req: Request, res: Response, next: NextFunction): Prom
 
     if (firstPublishYear !== undefined) {
       updateData.firstPublishYear = firstPublishYear === null ? null : Number(firstPublishYear);
+    }
+
+    if (seriesId !== undefined) {
+      if (seriesId === null) {
+        updateData.seriesId = null;
+        updateData.seriesOrder = null;
+      } else {
+        const series = seriesRepo.findById(seriesId);
+        if (!series) {
+          throw new ApiErrorClass('SERIES_NOT_FOUND', `Series with ID '${seriesId}' not found`, 404);
+        }
+        updateData.seriesId = seriesId;
+        if (seriesOrder !== undefined) {
+          updateData.seriesOrder = seriesOrder === null ? null : Number(seriesOrder);
+        }
+      }
+    }
+
+    if (authorId !== undefined) {
+      const newAuthor = authorRepo.findById(authorId);
+      if (!newAuthor) {
+        throw new ApiErrorClass('AUTHOR_NOT_FOUND', `Author with ID '${authorId}' not found`, 404);
+      }
+
+      const oldAuthor = authorRepo.findById(book.authorId);
+      if (oldAuthor && oldAuthor.id !== newAuthor.id) {
+        const oldFolderPath = path.join(
+          config.paths.ebooks,
+          oldAuthor.slug,
+          book.slug
+        );
+        const newFolderPath = path.join(
+          config.paths.ebooks,
+          newAuthor.slug,
+          book.slug
+        );
+
+        await fs.ensureDir(path.dirname(newFolderPath));
+
+        if (await fs.pathExists(oldFolderPath)) {
+          await fs.move(oldFolderPath, newFolderPath, { overwrite: true });
+        }
+      }
+
+      updateData.authorId = authorId;
     }
 
     const updatedBook = bookRepo.update(id, updateData);
@@ -251,30 +296,6 @@ async function deleteBook(req: Request, res: Response, next: NextFunction): Prom
   }
 }
 
-async function unlinkBookFromSeries(req: Request, res: Response, next: NextFunction): Promise<void> {
-  try {
-    const { id } = req.params;
-
-    const book = bookRepo.findById(id);
-    if (!book) {
-      throwNotFound('Book', id);
-    }
-
-    const updatedBook = bookRepo.update(id, {
-      seriesId: null,
-      seriesOrder: null,
-    });
-
-    const response: ApiResponse<BookResponse> = {
-      data: await mapBookToResponse(updatedBook),
-    };
-
-    res.json(response);
-  } catch (error) {
-    next(error);
-  }
-}
-
 async function mapBookToResponse(
   book: NonNullable<ReturnType<typeof bookRepo.findById>>,
 ): Promise<BookResponse> {
@@ -313,5 +334,4 @@ export const booksController = {
   toggleBookLike,
   updateBook,
   deleteBook,
-  unlinkBookFromSeries,
 };
