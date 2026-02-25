@@ -201,4 +201,49 @@ router.get('/:id', booksController.getBookById);
  */
 router.get('/:id/files', booksController.getBookFiles);
 
+/**
+ * @openapi
+ * /api/books/{id}/like:
+ *   put:
+ *     summary: Toggle book like status
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: Book ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - liked
+ *             properties:
+ *               liked:
+ *                 type: boolean
+ *                 description: Whether the book is liked
+ *     responses:
+ *       200:
+ *         description: Updated book
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Book'
+ *       404:
+ *         description: Book not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.put('/:id/like', booksController.toggleBookLike);
+
 export default router;

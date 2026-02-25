@@ -150,6 +150,32 @@ async function getBooksBySeries(
   }
 }
 
+async function toggleBookLike(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+    const { liked } = req.body;
+
+    if (typeof liked !== 'boolean') {
+      throw new ApiErrorClass('INVALID_INPUT', 'liked must be a boolean', 400);
+    }
+
+    const book = bookRepo.findById(id);
+    if (!book) {
+      throwNotFound('Book', id);
+    }
+
+    const updatedBook = bookRepo.toggleLike(id, liked);
+
+    const response: ApiResponse<BookResponse> = {
+      data: await mapBookToResponse(updatedBook!),
+    };
+
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function mapBookToResponse(
   book: NonNullable<ReturnType<typeof bookRepo.findById>>,
 ): Promise<BookResponse> {
@@ -186,4 +212,5 @@ export const booksController = {
   searchBooks,
   getBooksByAuthor,
   getBooksBySeries,
+  toggleBookLike,
 };
