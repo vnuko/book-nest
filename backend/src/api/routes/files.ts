@@ -105,4 +105,38 @@ router.get('/images/authors/:authorId', filesController.getAuthorImage);
  */
 router.get('/images/books/:bookId', filesController.getBookImage);
 
+/**
+ * @openapi
+ * /api/files/images/series/{seriesId}:
+ *   get:
+ *     summary: Get series image
+ *     tags: [Files]
+ *     parameters:
+ *       - in: path
+ *         name: seriesId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Series image
+ *         content:
+ *           image/jpeg:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *           image/png:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: Image not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.get('/images/series/:seriesId', filesController.getSeriesImage);
+
 export default router;

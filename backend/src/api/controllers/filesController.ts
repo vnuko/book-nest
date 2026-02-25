@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import fs from 'fs-extra';
 import path from 'path';
-import { fileRepo, bookRepo, authorRepo } from '../../db/repositories/index.js';
+import { fileRepo, bookRepo, authorRepo, seriesRepo } from '../../db/repositories/index.js';
 import { config } from '../../config/index.js';
 import { logger } from '../../utils/logger.js';
 import { throwNotFound, ApiErrorClass } from '../middleware/errorHandler.js';
@@ -92,8 +92,35 @@ async function getBookImage(req: Request, res: Response, next: NextFunction): Pr
   }
 }
 
+async function getSeriesImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { seriesId } = req.params;
+
+    const series = seriesRepo.findById(seriesId);
+    if (!series) {
+      throwNotFound('Series', seriesId);
+    }
+
+    const author = authorRepo.findById(series.authorId);
+    const imagePath = path.join(
+      config.paths.ebooks,
+      author?.slug || 'unknown',
+      `${series.slug}.jpg`
+    );
+
+    if (!(await fs.pathExists(imagePath))) {
+      throw new ApiErrorClass('IMAGE_NOT_FOUND', `No image found for series '${seriesId}'`, 404);
+    }
+
+    res.sendFile(path.resolve(imagePath));
+  } catch (error) {
+    next(error);
+  }
+}
+
 export const filesController = {
   downloadBookFile,
   getAuthorImage,
   getBookImage,
+  getSeriesImage,
 };
