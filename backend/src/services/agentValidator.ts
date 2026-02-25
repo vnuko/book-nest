@@ -1,4 +1,4 @@
-import type { NameResolverItemOutput, MetadataResolverOutput } from '../types/groq.js';
+import type { NameResolverItemOutput, MetadataResolverOutput } from '../types/ai.js';
 
 export function validateNameResolverOutput(output: NameResolverItemOutput): boolean {
   if (!output.filePath || typeof output.confidence !== 'number') return false;

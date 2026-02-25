@@ -18,13 +18,14 @@ export const config = {
     ebooks: process.env.EBOOKS_PATH || './ebooks',
     logs: process.env.LOGS_PATH || './logs',
     db: process.env.DB_PATH || './data/booknest.db',
+    processed: process.env.PROCESSED_PATH || './source/processed',
   },
   logging: {
     level: process.env.LOG_LEVEL || 'DEVELOPMENT',
   },
-  groq: {
-    apiKey: process.env.GROQ_API_KEY || '',
-    model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+  ai: {
+    apiKey: process.env.GEMINI_API_KEY || '',
+    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
     batchSize: parseInt(process.env.BATCH_SIZE || '25', 10),
     timeout: parseInt(process.env.AGENT_TIMEOUT || '60000', 10),
   },
@@ -44,7 +45,7 @@ export const config = {
 };
 
 export function validateConfig(): void {
-  if (!config.groq.apiKey || config.groq.apiKey === 'your-groq-api-key') {
-    throw new Error('GROQ_API_KEY is required in environment variables');
+  if (!config.ai.apiKey || config.ai.apiKey === 'your-gemini-api-key') {
+    throw new Error('GEMINI_API_KEY is required in environment variables');
   }
 }

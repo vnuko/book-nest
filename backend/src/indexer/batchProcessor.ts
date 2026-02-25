@@ -27,11 +27,16 @@ export interface BatchProcessorResult {
   errors: string[];
 }
 
+interface PersistResult {
+  successful: Array<{ filePath: string }>;
+  failed: Array<{ filePath: string; error: string }>;
+}
+
 class BatchProcessor {
   private batchSize: number;
 
   constructor() {
-    this.batchSize = config.groq.batchSize;
+    this.batchSize = config.ai.batchSize;
   }
 
   async startIndexing(): Promise<BatchProcessorResult> {
@@ -303,7 +308,7 @@ class BatchProcessor {
     if (!fastMode) {
       const groupedByName = this.groupByNameResults(nameResults);
 
-      batchLogger.info('Phase 2: Image Resolution STARTING', {
+      batchLogger.info('Phase 2a: Image Resolution STARTING', {
         authorCount: groupedByName.authors.size,
         bookCount: groupedByName.books.length,
       });
@@ -313,38 +318,80 @@ class BatchProcessor {
         authors: Array.from(groupedByName.authors.values()),
         books: groupedByName.books,
       });
-      batchLogger.info('Phase 2: Image Resolution COMPLETED');
+      batchLogger.info('Phase 2a: Image Resolution COMPLETED');
 
-      batchLogger.info('Phase 3: Metadata Resolution STARTING');
-
-      await metadataResolverAgent.execute({
-        batchId,
-        authors: Array.from(groupedByName.authors.values()),
-        books: groupedByName.books.map((b) => ({
-          title: b.originalTitle,
-          englishTitle: b.englishTitle,
-          authorName: b.authorName,
-          authorSlug: b.authorSlug,
-          bookSlug: b.bookSlug,
-        })),
-        series: groupedByName.series,
+      batchLogger.info('Phase 2b: Persisting to database STARTING');
+      const persistResults = await this.persistToDatabaseWithTracking(batchId, nameResults, batchLogger);
+      batchLogger.info('Phase 2b: Persisting to database COMPLETED', {
+        successful: persistResults.successful.length,
+        failed: persistResults.failed.length,
       });
-      batchLogger.info('Phase 3: Metadata Resolution COMPLETED');
-    }
 
-    batchLogger.info('Phase 4: Persisting to database STARTING');
+      if (persistResults.successful.length > 0) {
+        batchLogger.info('Phase 2c: Moving processed files STARTING', {
+          fileCount: persistResults.successful.length,
+        });
+        await this.moveProcessedFiles(persistResults.successful, batchLogger);
+        batchLogger.info('Phase 2c: Moving processed files COMPLETED');
+      }
 
-    await this.persistToDatabase(batchId, nameResults, batchLogger);
-    batchLogger.info('Phase 4: Persisting to database COMPLETED');
+      for (const result of persistResults.successful) {
+        const item = items.find((i) => i.path === result.filePath);
+        if (item) {
+          await batchRepo.updateItemStatus(item.id, 'persisted');
+        }
+      }
 
-    if (!fastMode) {
-      batchLogger.info('Phase 5: File conversion STARTING');
+      for (const result of persistResults.failed) {
+        const item = items.find((i) => i.path === result.filePath);
+        if (item) {
+          await batchRepo.updateItemStatus(item.id, 'failed', undefined, result.error);
+        }
+      }
 
-      await this.convertFiles(nameResults, batchLogger);
+      const successfulNameResults = nameResults.filter((r) =>
+        persistResults.successful.some((s) => s.filePath === r.filePath)
+      );
+
+      if (successfulNameResults.length > 0) {
+        const successfulGrouped = this.groupByNameResults(successfulNameResults);
+
+        batchLogger.info('Phase 3: Metadata Resolution STARTING');
+        try {
+          await metadataResolverAgent.execute({
+            batchId,
+            authors: Array.from(successfulGrouped.authors.values()),
+            books: successfulGrouped.books.map((b) => ({
+              title: b.originalTitle,
+              englishTitle: b.englishTitle,
+              authorName: b.authorName,
+              authorSlug: b.authorSlug,
+              bookSlug: b.bookSlug,
+            })),
+            series: successfulGrouped.series,
+          });
+          batchLogger.info('Phase 3: Metadata Resolution COMPLETED');
+        } catch (error) {
+          batchLogger.error('Phase 3: Metadata Resolution FAILED (non-blocking)', error as Error);
+        }
+
+        batchLogger.info('Phase 4: File conversion STARTING');
+        try {
+          await this.convertFiles(successfulNameResults, batchLogger);
+          batchLogger.info('Phase 4: File Conversion COMPLETED');
+        } catch (error) {
+          batchLogger.error('Phase 4: File Conversion FAILED (non-blocking)', error as Error);
+        }
+      }
+    } else {
+      await this.persistToDatabase(batchId, nameResults, batchLogger);
     }
 
     for (const item of items) {
-      await batchRepo.updateItemStatus(item.id, 'completed');
+      const itemStatus = await batchRepo.findItemById(item.id);
+      if (itemStatus && itemStatus.status !== 'failed') {
+        await batchRepo.updateItemStatus(item.id, 'completed');
+      }
     }
   }
 
@@ -505,6 +552,160 @@ class BatchProcessor {
         result.sha256,
         result.format
       );
+    }
+  }
+
+  private async persistToDatabaseWithTracking(
+    batchId: string,
+    nameResults: NameResolverAgentResult[],
+    batchLogger: ReturnType<typeof createBatchLogger>
+  ): Promise<PersistResult> {
+    const result: PersistResult = {
+      successful: [],
+      failed: [],
+    };
+
+    const processedAuthors = new Set<string>();
+    const processedSeries = new Set<string>();
+    const processedBooks = new Set<string>();
+    const authorIdMap = new Map<string, string>();
+    const seriesIdMap = new Map<string, string>();
+    const bookIdMap = new Map<string, string>();
+
+    for (const nameResult of nameResults) {
+      try {
+        const authorSlug = nameResult.author.slug;
+
+        if (!processedAuthors.has(authorSlug)) {
+          const existingAuthor = authorRepo.findBySlug(authorSlug);
+
+          if (!existingAuthor) {
+            const authorId = generateAuthorId();
+            authorIdMap.set(authorSlug, authorId);
+            authorRepo.create({
+              id: authorId,
+              name: nameResult.author.normalizedName,
+              slug: nameResult.author.slug,
+            });
+            batchLogger.debug('Created author', { name: nameResult.author.normalizedName, id: authorId });
+          } else {
+            authorIdMap.set(authorSlug, existingAuthor.id);
+          }
+          processedAuthors.add(authorSlug);
+        }
+
+        const authorId = authorIdMap.get(authorSlug)!;
+        let seriesId: string | null = null;
+        if (nameResult.series.slug) {
+          const seriesKey = `${authorSlug}/${nameResult.series.slug}`;
+
+          if (!processedSeries.has(seriesKey)) {
+            const existingSeries = seriesRepo.findBySlug(nameResult.series.slug);
+
+            if (!existingSeries) {
+              seriesId = generateSeriesId();
+              seriesIdMap.set(seriesKey, seriesId);
+              seriesRepo.create({
+                id: seriesId,
+                name: nameResult.series.englishName!,
+                originalName: nameResult.series.originalName,
+                slug: nameResult.series.slug,
+                authorId,
+              });
+              batchLogger.debug('Created series', { name: nameResult.series.englishName, id: seriesId });
+            } else {
+              seriesIdMap.set(seriesKey, existingSeries.id);
+            }
+            processedSeries.add(seriesKey);
+          }
+          seriesId = seriesIdMap.get(seriesKey)!;
+        }
+
+        const bookKey = `${authorSlug}/${nameResult.title.slug}`;
+
+        if (!processedBooks.has(bookKey)) {
+          const bookId = generateBookId();
+          bookIdMap.set(bookKey, bookId);
+          bookRepo.create({
+            id: bookId,
+            title: nameResult.title.englishTitle,
+            originalTitle: nameResult.title.originalTitle,
+            slug: nameResult.title.slug,
+            authorId,
+            seriesId,
+          });
+          batchLogger.debug('Created book', { title: nameResult.title.englishTitle, id: bookId });
+          processedBooks.add(bookKey);
+        }
+
+        const bookId = bookIdMap.get(bookKey)!;
+        fileRepo.create({
+          id: generateFileId(),
+          bookId,
+          type: 'book',
+          format: nameResult.format,
+          path: nameResult.filePath,
+          sha256: nameResult.sha256,
+        });
+
+        await fileOrganizer.copyFile(
+          nameResult.filePath,
+          nameResult.author.slug,
+          nameResult.title.slug,
+          nameResult.sha256,
+          nameResult.format
+        );
+
+        result.successful.push({ filePath: nameResult.filePath });
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        batchLogger.error('Failed to persist item', error as Error, {
+          filePath: nameResult.filePath,
+        });
+        result.failed.push({
+          filePath: nameResult.filePath,
+          error: errorMessage,
+        });
+      }
+    }
+
+    return result;
+  }
+
+  private async moveProcessedFiles(
+    successfulItems: Array<{ filePath: string }>,
+    batchLogger: ReturnType<typeof createBatchLogger>
+  ): Promise<void> {
+    const filePaths = successfulItems.map((item) => item.filePath);
+    const sourceBaseDir = config.paths.source;
+    const processedDir = config.paths.processed;
+
+    try {
+      const results = await fileOrganizer.moveProcessedFiles(
+        filePaths,
+        sourceBaseDir,
+        processedDir
+      );
+
+      const successful = results.filter((r) => r.success);
+      const failed = results.filter((r) => !r.success);
+
+      batchLogger.info('Files moved to processed folder', {
+        total: filePaths.length,
+        successful: successful.length,
+        failed: failed.length,
+      });
+
+      for (const failure of failed) {
+        batchLogger.warn('Failed to move file to processed folder', {
+          originalPath: failure.originalPath,
+          error: failure.error,
+        });
+      }
+    } catch (error) {
+      batchLogger.error('Batch file move failed', error as Error, {
+        fileCount: filePaths.length,
+      });
     }
   }
 

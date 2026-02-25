@@ -98,7 +98,7 @@ export function initDb(): void {
       batchId TEXT NOT NULL,
       filePath TEXT NOT NULL,
       sourceSha256 TEXT,
-      status TEXT NOT NULL CHECK(status IN ('pending', 'name_resolved', 'images_fetched', 'metadata_fetched', 'completed', 'failed')),
+      status TEXT NOT NULL CHECK(status IN ('pending', 'name_resolved', 'persisted', 'images_fetched', 'metadata_fetched', 'completed', 'failed')),
       agentResults TEXT,
       errorMessage TEXT,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,

@@ -5,6 +5,13 @@ import { config } from '../config/index.js';
 import { buildBookPath, buildAuthorDir, buildBookDir, type EbookFormat } from '../utils/index.js';
 import { calibreService } from '../services/calibreService.js';
 
+export interface MoveProcessedResult {
+  originalPath: string;
+  newPath: string;
+  success: boolean;
+  error?: string;
+}
+
 export interface OrganizeFileResult {
   originalPath: string;
   newPath: string;
@@ -210,6 +217,80 @@ class FileOrganizer {
       logger.error('Failed to remove author directory', error as Error, { authorDir });
       return false;
     }
+  }
+
+  async moveProcessedFile(
+    sourceFilePath: string,
+    sourceBaseDir: string,
+    processedDir: string
+  ): Promise<MoveProcessedResult> {
+    try {
+      const normalizedSource = path.resolve(sourceFilePath);
+      const normalizedBase = path.resolve(sourceBaseDir);
+      const normalizedProcessed = path.resolve(processedDir);
+
+      const relativePath = path.relative(normalizedBase, normalizedSource);
+
+      if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+        return {
+          originalPath: sourceFilePath,
+          newPath: '',
+          success: false,
+          error: 'File is outside source directory',
+        };
+      }
+
+      const targetPath = path.join(normalizedProcessed, relativePath);
+      await fs.ensureDir(path.dirname(targetPath));
+      await fs.move(normalizedSource, targetPath, { overwrite: false });
+
+      logger.info('File moved to processed', {
+        source: sourceFilePath,
+        target: targetPath,
+      });
+
+      return {
+        originalPath: sourceFilePath,
+        newPath: targetPath,
+        success: true,
+      };
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      logger.error('Failed to move file to processed', error as Error, {
+        source: sourceFilePath,
+      });
+
+      return {
+        originalPath: sourceFilePath,
+        newPath: '',
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async moveProcessedFiles(
+    filePaths: string[],
+    sourceBaseDir: string,
+    processedDir: string
+  ): Promise<MoveProcessedResult[]> {
+    const results: MoveProcessedResult[] = [];
+
+    for (const filePath of filePaths) {
+      const result = await this.moveProcessedFile(filePath, sourceBaseDir, processedDir);
+      results.push(result);
+    }
+
+    const successful = results.filter((r) => r.success).length;
+    const failed = results.filter((r) => !r.success).length;
+
+    logger.info('Batch file move completed', {
+      total: filePaths.length,
+      successful,
+      failed,
+    });
+
+    return results;
   }
 }
 

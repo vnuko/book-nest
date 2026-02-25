@@ -2,6 +2,7 @@ export type BatchStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'r
 export type BatchItemStatus =
   | 'pending'
   | 'name_resolved'
+  | 'persisted'
   | 'images_fetched'
   | 'metadata_fetched'
   | 'completed'

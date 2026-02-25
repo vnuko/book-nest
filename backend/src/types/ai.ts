@@ -61,7 +61,7 @@ export interface MetadataResolverOutput {
   series: MetadataSeriesOutput[];
 }
 
-export interface GroqError {
+export interface AIError {
   message: string;
   type: string;
   code: string;

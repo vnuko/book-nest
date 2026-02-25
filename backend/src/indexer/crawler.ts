@@ -32,7 +32,12 @@ class FileCrawler {
     logger.info('Starting file discovery', { sourcePath: this.sourcePath });
 
     const pattern = path.join(this.sourcePath, '**', '*.*').replace(/\\/g, '/');
-    const files = await glob(pattern, { nodir: true });
+    const processedPath = path.join(this.sourcePath, 'processed').replace(/\\/g, '/');
+
+    const files = await glob(pattern, {
+      nodir: true,
+      ignore: [`${processedPath}/**`],
+    });
 
     const discovered: DiscoveredFile[] = [];
 
@@ -55,7 +60,7 @@ class FileCrawler {
       }
     }
 
-    logger.info('File discovery complete', { count: discovered.length });
+    logger.info('File discovery complete', { count: discovered.length, processedPathExcluded: processedPath });
     return discovered;
   }
 

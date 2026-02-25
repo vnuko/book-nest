@@ -1,4 +1,4 @@
-import { groqService } from '../../services/groqService.js';
+import { aiService } from '../../services/aiService.js';
 import { logger, createBatchLogger } from '../../utils/logger.js';
 import {
   slugifyAuthor,
@@ -14,7 +14,7 @@ import type {
   ResolvedTitle,
   ResolvedSeries,
 } from '../../types/agents.js';
-import type { NameResolverItemOutput } from '../../types/groq.js';
+import type { NameResolverItemOutput } from '../../types/ai.js';
 
 class NameResolverAgent {
   async execute(input: NameResolverAgentInput): Promise<NameResolverAgentResult[]> {
@@ -24,11 +24,11 @@ class NameResolverAgent {
       files: input.files.map((f) => ({ id: f.id, path: f.path, format: f.format })),
     });
 
-    const groqInput = input.files.map((f) => ({ filePath: f.path }));
-    batchLogger.info('=== STEP 1: SENDING TO GROQ API ===', { inputCount: groqInput.length });
+    const aiInput = input.files.map((f) => ({ filePath: f.path }));
+    batchLogger.info('=== STEP 1: SENDING TO AI SERVICE ===', { inputCount: aiInput.length });
 
     try {
-      const results = await groqService.resolveNames(groqInput);
+      const results = await aiService.resolveNames(aiInput);
 
       const processedResults = this.processResults(input.files, results);
 
@@ -48,23 +48,23 @@ class NameResolverAgent {
 
   private processResults(
     files: NameResolverAgentInput['files'],
-    groqResults: NameResolverItemOutput[]
+    aiResults: NameResolverItemOutput[]
   ): NameResolverAgentResult[] {
     const results: NameResolverAgentResult[] = [];
     const authorCache = new Map<string, ResolvedAuthor>();
     const bookSlugsByAuthor = new Map<string, Set<string>>();
 
     for (const file of files) {
-      const groqResult = groqResults.find((r) => r.filePath === file.path);
+      const aiResult = aiResults.find((r) => r.filePath === file.path);
 
-      if (!groqResult) {
-        logger.warn('No Groq result for file', { filePath: file.path });
+      if (!aiResult) {
+        logger.warn('No AI result for file', { filePath: file.path });
         continue;
       }
 
-      const author = this.processAuthor(groqResult, authorCache);
-      const title = this.processTitle(groqResult, author.slug, bookSlugsByAuthor);
-      const series = this.processSeries(groqResult);
+      const author = this.processAuthor(aiResult, authorCache);
+      const title = this.processTitle(aiResult, author.slug, bookSlugsByAuthor);
+      const series = this.processSeries(aiResult);
 
       results.push({
         fileId: file.id,
@@ -74,7 +74,7 @@ class NameResolverAgent {
         author,
         title,
         series,
-        overallConfidence: groqResult.confidence,
+        overallConfidence: aiResult.confidence,
       });
     }
 
@@ -82,10 +82,10 @@ class NameResolverAgent {
   }
 
   private processAuthor(
-    groqResult: NameResolverItemOutput,
+    aiResult: NameResolverItemOutput,
     authorCache: Map<string, ResolvedAuthor>
   ): ResolvedAuthor {
-    const originalName = groqResult.author.name;
+    const originalName = aiResult.author.name;
     const normalizedName = this.normalizeAuthorName(originalName);
 
     if (authorCache.has(normalizedName)) {
@@ -97,7 +97,7 @@ class NameResolverAgent {
       originalName,
       normalizedName,
       slug,
-      confidence: groqResult.author.confidence,
+      confidence: aiResult.author.confidence,
     };
     authorCache.set(normalizedName, author);
 
@@ -105,12 +105,12 @@ class NameResolverAgent {
   }
 
   private processTitle(
-    groqResult: NameResolverItemOutput,
+    aiResult: NameResolverItemOutput,
     authorSlug: string,
     bookSlugsByAuthor: Map<string, Set<string>>
   ): ResolvedTitle {
-    const originalTitle = groqResult.title.original;
-    const englishTitle = groqResult.title.english || originalTitle;
+    const originalTitle = aiResult.title.original;
+    const englishTitle = aiResult.title.english || originalTitle;
 
     let existingSlugs = bookSlugsByAuthor.get(authorSlug);
     if (!existingSlugs) {
@@ -128,12 +128,12 @@ class NameResolverAgent {
       originalTitle,
       englishTitle,
       slug,
-      confidence: groqResult.title.confidence,
+      confidence: aiResult.title.confidence,
     };
   }
 
-  private processSeries(groqResult: NameResolverItemOutput): ResolvedSeries {
-    if (!groqResult.series?.name) {
+  private processSeries(aiResult: NameResolverItemOutput): ResolvedSeries {
+    if (!aiResult.series?.name) {
       return {
         originalName: null,
         englishName: null,
@@ -142,15 +142,15 @@ class NameResolverAgent {
       };
     }
 
-    const originalName = groqResult.series.name;
-    const englishName = groqResult.series.englishName || originalName;
+    const originalName = aiResult.series.name;
+    const englishName = aiResult.series.englishName || originalName;
     const slug = slugifySeries(englishName);
 
     return {
       originalName,
       englishName,
       slug,
-      confidence: groqResult.series.confidence,
+      confidence: aiResult.series.confidence,
     };
   }
 
