@@ -33,21 +33,20 @@ const createStmt = db.prepare<
   [
     Omit<
       CreateBookInput,
-      'originalTitle' | 'seriesId' | 'seriesOrder' | 'description' | 'isbn' | 'firstPublishYear' | 'liked'
+      'originalTitle' | 'seriesId' | 'seriesOrder' | 'description' | 'firstPublishYear' | 'liked'
     > & {
       originalTitle: string | null;
       seriesId: string | null;
       seriesOrder: number | null;
       description: string | null;
-      isbn: string | null;
       firstPublishYear: number | null;
       liked: number;
     },
   ],
   Book
 >(`
-  INSERT INTO books (id, title, originalTitle, slug, authorId, seriesId, seriesOrder, description, isbn, firstPublishYear, liked)
-  VALUES (@id, @title, @originalTitle, @slug, @authorId, @seriesId, @seriesOrder, @description, @isbn, @firstPublishYear, @liked)
+  INSERT INTO books (id, title, originalTitle, slug, authorId, seriesId, seriesOrder, description, firstPublishYear, liked)
+  VALUES (@id, @title, @originalTitle, @slug, @authorId, @seriesId, @seriesOrder, @description, @firstPublishYear, @liked)
   RETURNING *
 `);
 
@@ -62,7 +61,6 @@ const updateStmt = db.prepare<
       seriesId?: string | null;
       seriesOrder?: number | null;
       description?: string | null;
-      isbn?: string | null;
       firstPublishYear?: number | null;
       liked?: number;
       updatedAt: string;
@@ -78,7 +76,6 @@ const updateStmt = db.prepare<
     seriesId = COALESCE(@seriesId, seriesId),
     seriesOrder = COALESCE(@seriesOrder, seriesOrder),
     description = COALESCE(@description, description),
-    isbn = COALESCE(@isbn, isbn),
     firstPublishYear = COALESCE(@firstPublishYear, firstPublishYear),
     liked = COALESCE(@liked, liked),
     updatedAt = @updatedAt
@@ -137,7 +134,6 @@ export const bookRepo = {
       seriesId: input.seriesId ?? null,
       seriesOrder: input.seriesOrder ?? null,
       description: input.description ?? null,
-      isbn: input.isbn ?? null,
       firstPublishYear: input.firstPublishYear ?? null,
       liked: input.liked ? 1 : 0,
     })!;
@@ -153,7 +149,6 @@ export const bookRepo = {
       seriesId: input.seriesId,
       seriesOrder: input.seriesOrder,
       description: input.description,
-      isbn: input.isbn,
       firstPublishYear: input.firstPublishYear,
       liked: input.liked !== undefined ? (input.liked ? 1 : 0) : undefined,
       updatedAt: new Date().toISOString(),

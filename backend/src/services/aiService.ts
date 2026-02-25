@@ -251,7 +251,6 @@ RULES:
         author: b.author,
         title: b.title,
         description: b.description?.substring(0, 100) + '...',
-        isbn: b.isbn,
         firstPublishYear: b.firstPublishYear,
       })),
       series: response.series.map((s) => ({

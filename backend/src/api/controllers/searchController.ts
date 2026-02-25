@@ -59,7 +59,6 @@ function mapBookToResponse(book: ReturnType<typeof bookRepo.findById>): BookResp
     originalTitle: book.originalTitle,
     slug: book.slug,
     description: book.description,
-    isbn: book.isbn,
     firstPublishYear: book.firstPublishYear,
     liked: Boolean(book.liked),
     author: author

@@ -56,7 +56,6 @@ describe('Database Integration Tests', () => {
         seriesId TEXT,
         seriesOrder INTEGER,
         description TEXT,
-        isbn TEXT,
         firstPublishYear INTEGER,
         liked INTEGER DEFAULT 0,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,

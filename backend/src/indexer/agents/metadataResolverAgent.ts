@@ -106,7 +106,6 @@ class MetadataResolverAgent {
         authorSlug: book.authorSlug,
         bookSlug: book.bookSlug,
         description: aiBook?.description || null,
-        isbn: aiBook?.isbn || null,
         firstPublishYear: aiBook?.firstPublishYear || null,
       });
     }
@@ -189,7 +188,6 @@ class MetadataResolverAgent {
           if (book.description) {
             bookRepo.update(existing.id, {
               description: book.description,
-              isbn: book.isbn,
               firstPublishYear: book.firstPublishYear,
             });
             booksUpdated++;

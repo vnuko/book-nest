@@ -80,7 +80,6 @@ const options: swaggerJsdoc.Options = {
             originalTitle: { type: 'string', nullable: true },
             slug: { type: 'string', example: 'the-way-of-kings' },
             description: { type: 'string', nullable: true },
-            isbn: { type: 'string', nullable: true },
             firstPublishYear: { type: 'integer', nullable: true },
             liked: { type: 'boolean', example: false },
             author: {
