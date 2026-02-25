@@ -251,6 +251,30 @@ async function deleteBook(req: Request, res: Response, next: NextFunction): Prom
   }
 }
 
+async function unlinkBookFromSeries(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+
+    const book = bookRepo.findById(id);
+    if (!book) {
+      throwNotFound('Book', id);
+    }
+
+    const updatedBook = bookRepo.update(id, {
+      seriesId: null,
+      seriesOrder: null,
+    });
+
+    const response: ApiResponse<BookResponse> = {
+      data: await mapBookToResponse(updatedBook),
+    };
+
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function mapBookToResponse(
   book: NonNullable<ReturnType<typeof bookRepo.findById>>,
 ): Promise<BookResponse> {
@@ -289,4 +313,5 @@ export const booksController = {
   toggleBookLike,
   updateBook,
   deleteBook,
+  unlinkBookFromSeries,
 };

@@ -182,4 +182,38 @@ router.get('/:id/books', seriesController.getSeriesBooks);
  */
 router.put('/:id', seriesController.updateSeries);
 
+/**
+ * @openapi
+ * /api/series/{id}:
+ *   delete:
+ *     summary: Delete a series
+ *     description: Deletes the series, its image, and unlinks all books from the series. Books are NOT deleted.
+ *     tags: [Series]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: Series ID
+ *     responses:
+ *       200:
+ *         description: Series deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *       404:
+ *         description: Series not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.delete('/:id', seriesController.deleteSeries);
+
 export default router;

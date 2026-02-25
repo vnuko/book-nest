@@ -338,4 +338,38 @@ router.put('/:id', booksController.updateBook);
  */
 router.delete('/:id', booksController.deleteBook);
 
+/**
+ * @openapi
+ * /api/books/{id}/unlink-series:
+ *   put:
+ *     summary: Unlink book from series
+ *     description: Removes the book from its series by setting seriesId and seriesOrder to null
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: Book ID
+ *     responses:
+ *       200:
+ *         description: Book unlinked from series
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Book'
+ *       404:
+ *         description: Book not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.put('/:id/unlink-series', booksController.unlinkBookFromSeries);
+
 export default router;

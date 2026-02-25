@@ -1,4 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
+import fs from 'fs-extra';
+import path from 'path';
 import { seriesRepo, authorRepo, bookRepo, fileRepo } from '../../db/repositories/index.js';
 import {
   parsePagination,
@@ -6,6 +8,7 @@ import {
   buildPaginationResult,
 } from '../../utils/index.js';
 import { ApiErrorClass, throwNotFound } from '../middleware/errorHandler.js';
+import { config } from '../../config/index.js';
 import type { ApiResponse, SeriesResponse, BookResponse } from '../../types/api.js';
 import type { CreateSeriesInput } from '../../types/db.js';
 
@@ -154,6 +157,39 @@ async function updateSeries(req: Request, res: Response, next: NextFunction): Pr
   }
 }
 
+async function deleteSeries(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+
+    const series = seriesRepo.findById(id);
+    if (!series) {
+      throwNotFound('Series', id);
+    }
+
+    const author = authorRepo.findById(series.authorId);
+
+    const seriesImagePath = path.join(
+      config.paths.ebooks,
+      author?.slug || 'unknown',
+      `${series.slug}.jpg`,
+    );
+    if (await fs.pathExists(seriesImagePath)) {
+      await fs.remove(seriesImagePath);
+    }
+
+    const books = bookRepo.findBySeriesId(id);
+    for (const book of books) {
+      bookRepo.update(book.id, { seriesId: null, seriesOrder: null });
+    }
+
+    seriesRepo.delete(id);
+
+    res.json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function mapSeriesToResponse(
   series: NonNullable<ReturnType<typeof seriesRepo.findById>>,
 ): SeriesResponse {
@@ -181,4 +217,5 @@ export const seriesController = {
   getSeriesBooks,
   searchSeries,
   updateSeries,
+  deleteSeries,
 };
