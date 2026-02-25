@@ -7,6 +7,7 @@ import {
 } from '../../utils/index.js';
 import { ApiErrorClass, throwNotFound } from '../middleware/errorHandler.js';
 import type { ApiResponse, SeriesResponse, BookResponse } from '../../types/api.js';
+import type { CreateSeriesInput } from '../../types/db.js';
 
 async function getSeries(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -111,6 +112,48 @@ async function searchSeries(req: Request, res: Response, next: NextFunction): Pr
   }
 }
 
+async function updateSeries(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+    const { name, description, originalName } = req.body;
+
+    if (name === undefined) {
+      throw new ApiErrorClass('INVALID_INPUT', 'name is required', 400);
+    }
+
+    if (typeof name !== 'string' || name.trim().length === 0) {
+      throw new ApiErrorClass('INVALID_INPUT', 'name must be a non-empty string', 400);
+    }
+
+    const series = seriesRepo.findById(id);
+    if (!series) {
+      throwNotFound('Series', id);
+    }
+
+    const updateData: Partial<Omit<CreateSeriesInput, 'id'>> = {
+      name: name.trim(),
+    };
+
+    if (description !== undefined) {
+      updateData.description = description === '' ? null : description;
+    }
+
+    if (originalName !== undefined) {
+      updateData.originalName = originalName === '' ? null : originalName;
+    }
+
+    const updatedSeries = seriesRepo.update(id, updateData);
+
+    const response: ApiResponse<SeriesResponse> = {
+      data: mapSeriesToResponse(updatedSeries),
+    };
+
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+}
+
 function mapSeriesToResponse(
   series: NonNullable<ReturnType<typeof seriesRepo.findById>>,
 ): SeriesResponse {
@@ -137,4 +180,5 @@ export const seriesController = {
   getSeriesById,
   getSeriesBooks,
   searchSeries,
+  updateSeries,
 };

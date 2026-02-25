@@ -123,4 +123,63 @@ router.get('/:id', seriesController.getSeriesById);
  */
 router.get('/:id/books', seriesController.getSeriesBooks);
 
+/**
+ * @openapi
+ * /api/series/{id}:
+ *   put:
+ *     summary: Update series details
+ *     tags: [Series]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: Series ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Series name (required, non-empty)
+ *               description:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Series description (empty string sets to null)
+ *               originalName:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Original series name (empty string sets to null)
+ *     responses:
+ *       200:
+ *         description: Updated series
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Series'
+ *       400:
+ *         description: Invalid input (e.g., empty name)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Series not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.put('/:id', seriesController.updateSeries);
+
 export default router;
