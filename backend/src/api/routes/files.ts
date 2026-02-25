@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { filesController } from '../controllers/filesController.js';
+import { uploadMiddleware } from '../middleware/upload.js';
 
 const router = Router();
 
@@ -138,5 +139,128 @@ router.get('/images/books/:bookId', filesController.getBookImage);
  *               $ref: '#/components/schemas/Error'
  */
 router.get('/images/series/:seriesId', filesController.getSeriesImage);
+
+/**
+ * @openapi
+ * /api/files/images/authors/{authorId}:
+ *   put:
+ *     summary: Upload author image
+ *     tags: [Files]
+ *     parameters:
+ *       - in: path
+ *         name: authorId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file (JPG, PNG, or WebP, max 2MB)
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *       400:
+ *         description: Invalid file or missing file
+ *       404:
+ *         description: Author not found
+ */
+router.put('/images/authors/:authorId', uploadMiddleware.single('file'), filesController.uploadAuthorImage);
+
+/**
+ * @openapi
+ * /api/files/images/books/{bookId}:
+ *   put:
+ *     summary: Upload book cover image
+ *     tags: [Files]
+ *     parameters:
+ *       - in: path
+ *         name: bookId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file (JPG, PNG, or WebP, max 2MB)
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *       400:
+ *         description: Invalid file or missing file
+ *       404:
+ *         description: Book not found
+ */
+router.put('/images/books/:bookId', uploadMiddleware.single('file'), filesController.uploadBookImage);
+
+/**
+ * @openapi
+ * /api/files/images/series/{seriesId}:
+ *   put:
+ *     summary: Upload series image
+ *     tags: [Files]
+ *     parameters:
+ *       - in: path
+ *         name: seriesId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file (JPG, PNG, or WebP, max 2MB)
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *       400:
+ *         description: Invalid file or missing file
+ *       404:
+ *         description: Series not found
+ */
+router.put('/images/series/:seriesId', uploadMiddleware.single('file'), filesController.uploadSeriesImage);
 
 export default router;

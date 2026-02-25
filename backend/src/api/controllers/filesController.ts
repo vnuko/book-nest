@@ -118,9 +118,103 @@ async function getSeriesImage(req: Request, res: Response, next: NextFunction): 
   }
 }
 
+async function uploadAuthorImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { authorId } = req.params;
+
+    if (!(req as any).file) {
+      throw new ApiErrorClass('NO_FILE', 'No file uploaded', 400);
+    }
+
+    const author = authorRepo.findById(authorId);
+    if (!author) {
+      throwNotFound('Author', authorId);
+    }
+
+    const file = (req as any).file;
+    const ext = path.extname(file.originalname || 'image.jpg').toLowerCase().slice(1);
+    const filename = `author.${ext === 'jpeg' ? 'jpg' : ext}`;
+    const targetPath = path.join(config.paths.ebooks, author.slug, filename);
+
+    await fs.ensureDir(path.dirname(targetPath));
+
+    await fs.copy(file.path, targetPath, { overwrite: true });
+
+    res.json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function uploadBookImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { bookId } = req.params;
+
+    if (!(req as any).file) {
+      throw new ApiErrorClass('NO_FILE', 'No file uploaded', 400);
+    }
+
+    const book = bookRepo.findById(bookId);
+    if (!book) {
+      throwNotFound('Book', bookId);
+    }
+
+    const author = authorRepo.findById(book.authorId);
+    const file = (req as any).file;
+    const ext = path.extname(file.originalname || 'image.jpg').toLowerCase().slice(1);
+    const filename = `book.${ext === 'jpeg' ? 'jpg' : ext}`;
+    const targetPath = path.join(
+      config.paths.ebooks,
+      author?.slug || 'unknown',
+      book.slug,
+      filename
+    );
+
+    await fs.ensureDir(path.dirname(targetPath));
+
+    await fs.copy(file.path, targetPath, { overwrite: true });
+
+    res.json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function uploadSeriesImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { seriesId } = req.params;
+
+    if (!(req as any).file) {
+      throw new ApiErrorClass('NO_FILE', 'No file uploaded', 400);
+    }
+
+    const series = seriesRepo.findById(seriesId);
+    if (!series) {
+      throwNotFound('Series', seriesId);
+    }
+
+    const author = authorRepo.findById(series.authorId);
+    const file = (req as any).file;
+    const ext = path.extname(file.originalname || 'image.jpg').toLowerCase().slice(1);
+    const filename = `${series.slug}.${ext === 'jpeg' ? 'jpg' : ext}`;
+    const targetPath = path.join(config.paths.ebooks, author?.slug || 'unknown', filename);
+
+    await fs.ensureDir(path.dirname(targetPath));
+
+    await fs.copy(file.path, targetPath, { overwrite: true });
+
+    res.json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export const filesController = {
   downloadBookFile,
   getAuthorImage,
   getBookImage,
   getSeriesImage,
+  uploadAuthorImage,
+  uploadBookImage,
+  uploadSeriesImage,
 };
