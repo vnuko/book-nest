@@ -7,6 +7,7 @@ import {
 } from '../../utils/index.js';
 import { ApiErrorClass, throwNotFound } from '../middleware/errorHandler.js';
 import type { ApiResponse, BookResponse } from '../../types/api.js';
+import type { CreateBookInput } from '../../types/db.js';
 
 async function getBooks(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -176,6 +177,48 @@ async function toggleBookLike(req: Request, res: Response, next: NextFunction): 
   }
 }
 
+async function updateBook(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { id } = req.params;
+    const { title, description, firstPublishYear } = req.body;
+
+    if (title === undefined) {
+      throw new ApiErrorClass('INVALID_INPUT', 'title is required', 400);
+    }
+
+    if (typeof title !== 'string' || title.trim().length === 0) {
+      throw new ApiErrorClass('INVALID_INPUT', 'title must be a non-empty string', 400);
+    }
+
+    const book = bookRepo.findById(id);
+    if (!book) {
+      throwNotFound('Book', id);
+    }
+
+    const updateData: Partial<Omit<CreateBookInput, 'id'>> = {
+      title: title.trim(),
+    };
+
+    if (description !== undefined) {
+      updateData.description = description === '' ? null : description;
+    }
+
+    if (firstPublishYear !== undefined) {
+      updateData.firstPublishYear = firstPublishYear === null ? null : Number(firstPublishYear);
+    }
+
+    const updatedBook = bookRepo.update(id, updateData);
+
+    const response: ApiResponse<BookResponse> = {
+      data: await mapBookToResponse(updatedBook),
+    };
+
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function mapBookToResponse(
   book: NonNullable<ReturnType<typeof bookRepo.findById>>,
 ): Promise<BookResponse> {
@@ -212,4 +255,5 @@ export const booksController = {
   getBooksByAuthor,
   getBooksBySeries,
   toggleBookLike,
+  updateBook,
 };

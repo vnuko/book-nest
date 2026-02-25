@@ -246,4 +246,63 @@ router.get('/:id/files', booksController.getBookFiles);
  */
 router.put('/:id/like', booksController.toggleBookLike);
 
+/**
+ * @openapi
+ * /api/books/{id}:
+ *   put:
+ *     summary: Update book details
+ *     tags: [Books]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: Book ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Book title (required)
+ *               description:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Book description (empty string sets to null)
+ *               firstPublishYear:
+ *                 type: integer
+ *                 nullable: true
+ *                 description: First publication year
+ *     responses:
+ *       200:
+ *         description: Updated book
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Book'
+ *       400:
+ *         description: Invalid input (e.g., empty title)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Book not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.put('/:id', booksController.updateBook);
+
 export default router;
