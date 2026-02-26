@@ -16,4 +16,7 @@ export const authorsApi = {
 
   getSeries: (authorId: string, page = 1, limit = 20) =>
     api.get<{ data: Series[]; pagination?: Pagination }>(`/api/authors/${authorId}/series`, { page, limit }),
+
+  update: (id: string, data: { name: string; bio?: string | null; dateOfBirth?: string | null; nationality?: string | null }) =>
+    api.put<{ data: Author }>(`/api/authors/${id}`, data),
 };

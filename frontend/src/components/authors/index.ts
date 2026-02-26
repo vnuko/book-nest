@@ -1,0 +1,1 @@
+export { AuthorImageModal } from './AuthorImageModal';

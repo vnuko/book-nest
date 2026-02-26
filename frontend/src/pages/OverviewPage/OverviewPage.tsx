@@ -29,11 +29,6 @@ export function OverviewPage() {
 
   return (
     <div className="page-content">
-      <div className={styles.sectionHeader}>
-        <h1 className={styles.sectionTitle}>Welcome to BookSpot</h1>
-        <p className={styles.sectionSubtitle}>Discover your next favorite book</p>
-      </div>
-
       {books.length > 0 && (
         <section className={styles.section}>
           <div className={styles.sectionHeadingRow}>
@@ -60,8 +55,8 @@ export function OverviewPage() {
               See More
             </button>
           </div>
-          <div className={`row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4`}>
-            {authors.slice(0, 5).map((author) => (
+          <div className={`row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4`}>
+            {authors.slice(0, 6).map((author) => (
               <div key={author.id} className="col">
                 <AuthorCard author={author} />
               </div>

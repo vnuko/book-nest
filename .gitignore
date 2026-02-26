@@ -12,6 +12,7 @@ backend/.env
 node_modules/
 dist/
 
+.opencode/
 .env
 *.log
 coverage/

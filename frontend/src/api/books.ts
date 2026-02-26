@@ -22,4 +22,7 @@ export const booksApi = {
 
   toggleLike: (id: string, liked: boolean) =>
     api.put<{ data: { liked: boolean } }>(`/api/books/${id}/like`, { liked }),
+
+  update: (id: string, data: { title: string; description?: string | null; firstPublishYear?: number | null }) =>
+    api.put<{ data: Book }>(`/api/books/${id}`, data),
 };

@@ -176,7 +176,7 @@ RULES:
 
   async resolveMetadata(input: MetadataResolverInput): Promise<MetadataResolverOutput> {
     const systemPrompt = this.buildSystemPrompt(
-      'a highly specialized book metadata service. You provide detailed metadata for authors, books, and series including biographical information, book descriptions, ISBNs, publication years, and series descriptions. All descriptions must be in English.'
+      'a highly specialized book metadata service. You provide detailed metadata for authors, books, and series including biographical information, book descriptions, publication years, and series descriptions. All descriptions must be in English.'
     );
 
     const userPrompt = `Find metadata for these authors, books, and series.

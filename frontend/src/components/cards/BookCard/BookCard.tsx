@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
 import { ROUTES } from '../../../utils/routes';
 import { getImageUrl } from '../../../api/client';
 import { LikeButton } from '../../common';
@@ -55,7 +55,7 @@ export function BookCard({ book }: BookCardProps) {
         />
         <div className={styles.overlay}>
           <button className={styles.playButton} type="button" aria-label="View book">
-            <FontAwesomeIcon icon={faPlay} />
+            <FontAwesomeIcon icon={faBookOpen} />
           </button>
         </div>
       </div>

@@ -1,0 +1,1 @@
+export { BookImageModal } from './BookImageModal';

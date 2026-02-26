@@ -24,8 +24,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       />
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
         <div className={styles.logo}>
-          <h1>BookSpot</h1>
-          <p>Your literary companion</p>
+          <h1>BookNest</h1>
         </div>
         <nav className={styles.nav}>
           {navItems.map((item) => (

@@ -1,8 +1,62 @@
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--bn-bg);
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text-secondary);
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.actionBtn:hover {
+  background: var(--bn-sidebar);
+  color: var(--bn-text);
+  border-color: var(--bn-accent);
+}
+
+.actionBtn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dangerBtn:hover {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.imageBtn:hover {
+  border-color: #9b59b6;
+  color: #9b59b6;
+}
+
 .header {
   display: flex;
   align-items: flex-start;
   gap: 2rem;
   margin-bottom: 3rem;
+}
+
+.avatarWrapper {
+  position: relative;
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .avatarLarge {
@@ -15,8 +69,29 @@
   transition: filter var(--bn-transition-slow);
 }
 
-.avatarLarge:hover {
-  filter: grayscale(0);
+.avatarWrapper:hover .avatarLarge {
+  filter: grayscale(0) brightness(0.7);
+}
+
+.avatarOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity var(--bn-transition-fast);
+  border-radius: 50%;
+}
+
+.avatarWrapper:hover .avatarOverlay {
+  opacity: 1;
+}
+
+.overlayIcon {
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .info {
@@ -35,6 +110,26 @@
   font-size: 1rem;
   color: var(--bn-text-secondary);
   line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--bn-text-secondary);
+}
+
+.metaIcon {
+  font-size: 0.875rem;
+  opacity: 0.7;
 }
 
 .booksSection {
@@ -49,6 +144,112 @@
   text-align: center;
   padding: 3rem;
   color: var(--bn-text-muted);
+}
+
+.editField {
+  margin-bottom: 1.25rem;
+}
+
+.editLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bn-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.editInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bn-bg);
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color var(--bn-transition-fast);
+}
+
+.editInput:focus {
+  outline: none;
+  border-color: var(--bn-accent);
+}
+
+.editTextarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bn-bg);
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text);
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color var(--bn-transition-fast);
+}
+
+.editTextarea:focus {
+  outline: none;
+  border-color: var(--bn-accent);
+}
+
+.editActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.cancelEditBtn {
+  padding: 0.625rem 1.25rem;
+  background: transparent;
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.cancelEditBtn:hover {
+  background: var(--bn-bg);
+  color: var(--bn-text);
+}
+
+.saveEditBtn {
+  padding: 0.625rem 1.25rem;
+  background: var(--bn-accent);
+  border: none;
+  border-radius: var(--bn-radius-sm);
+  color: #000;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.saveEditBtn:hover {
+  filter: brightness(1.1);
+}
+
+.saveEditBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancelEditBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.editError {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin: 0;
 }
 
 @media (max-width: 768px) {

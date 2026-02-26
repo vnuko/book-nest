@@ -40,17 +40,61 @@
   color: #e74c3c;
 }
 
+.readBtn:hover {
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
 .header {
   display: flex;
   gap: 2.5rem;
   margin-bottom: 3rem;
 }
 
+.coverWrapper {
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: var(--bn-radius);
+  overflow: hidden;
+}
+
 .coverLarge {
   width: 280px;
-  flex-shrink: 0;
+  display: block;
   border-radius: var(--bn-radius);
   box-shadow: var(--bn-shadow-hover);
+  transition: filter var(--bn-transition-fast);
+}
+
+.coverWrapper:hover .coverLarge {
+  filter: brightness(0.7);
+}
+
+.coverOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity var(--bn-transition-fast);
+  border-radius: var(--bn-radius);
+}
+
+.coverWrapper:hover .coverOverlay {
+  opacity: 1;
+}
+
+.overlayIcon {
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.imageBtn:hover {
+  border-color: #9b59b6;
+  color: #9b59b6;
 }
 
 .info {
@@ -69,6 +113,15 @@
   font-size: 1.125rem;
   color: var(--bn-text-secondary);
   margin-bottom: 0.5rem;
+}
+
+.authorLink {
+  color: var(--bn-accent);
+  transition: opacity var(--bn-transition-fast);
+}
+
+.authorLink:hover {
+  opacity: 0.8;
 }
 
 .seriesLink {
@@ -167,6 +220,38 @@
 .fileBadgeAzw3 { background: #F3E5F5; color: #7B1FA2; }
 .fileBadgeFb2 { background: #FFF8E1; color: #F57F17; }
 
+.readSection {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--bn-border);
+}
+
+.readNowBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--bn-text-secondary);
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.readNowBtn:hover {
+  background: var(--bn-bg);
+  border-color: var(--bn-accent);
+  color: var(--bn-accent);
+}
+
+.readNowBtn svg {
+  width: 18px;
+  height: 18px;
+}
+
 .error {
   text-align: center;
   padding: 3rem;
@@ -261,6 +346,12 @@
 
 .saveEditBtn:hover {
   filter: brightness(1.1);
+}
+
+.editError {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin: 0;
 }
 
 @media (max-width: 768px) {

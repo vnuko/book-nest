@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faPen, faLink, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useBook } from '../../hooks';
+import { faDownload, faPen, faLink, faTrash, faBookOpen, faImage, faCamera } from '@fortawesome/free-solid-svg-icons';
+import { useBook, useUpdateBook } from '../../hooks';
 import { LoadingSpinner, ConfirmDialog } from '../../components/common';
 import { BackLink } from '../../components/common/BackLink';
 import { ROUTES } from '../../utils/routes';
 import { getImageUrl, API_BASE } from '../../api/client';
-import { RelinkBookModal } from '../../components/books';
+import { RelinkBookModal, BookReaderModal, BookImageModal } from '../../components/books';
 import type { BookFile } from '../../types';
 import styles from './BookDetailPage.module.css';
 
@@ -51,6 +51,7 @@ function DownloadButton({ file, bookId }: { file: BookFile; bookId: string }) {
 export function BookDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, error } = useBook(id);
+  const { mutate: updateBook, isPending: isSaving, error: updateError } = useUpdateBook(id!);
   
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
@@ -58,6 +59,9 @@ export function BookDetailPage() {
   const [editedYear, setEditedYear] = useState<number | null>(null);
   const [isRelinkModalOpen, setIsRelinkModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isReaderOpen, setIsReaderOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [imageKey, setImageKey] = useState(0);
 
   const handleStartEdit = () => {
     if (data?.data) {
@@ -69,8 +73,15 @@ export function BookDetailPage() {
   };
 
   const handleSaveEdit = () => {
-    console.log('Saving:', { title: editedTitle, description: editedDescription, year: editedYear });
-    setIsEditing(false);
+    updateBook({
+      title: editedTitle,
+      description: editedDescription || null,
+      firstPublishYear: editedYear,
+    }, {
+      onSuccess: () => {
+        setIsEditing(false);
+      },
+    });
   };
 
   const handleCancelEdit = () => {
@@ -103,6 +114,7 @@ export function BookDetailPage() {
 
   const book = data.data;
   const coverUrl = getImageUrl('books', book.id);
+  const hasTxtFile = book.files?.some(f => f.format.toLowerCase() === 'txt');
 
   return (
     <div className="page-content">
@@ -110,6 +122,16 @@ export function BookDetailPage() {
         <BackLink to={ROUTES.BOOKS} label="Back to Books" />
         {!isEditing && (
           <div className={styles.actions}>
+            {hasTxtFile && (
+              <button 
+                className={`${styles.actionBtn} ${styles.readBtn}`}
+                onClick={() => setIsReaderOpen(true)}
+                aria-label="Read book"
+                title="Read book in browser"
+              >
+                <FontAwesomeIcon icon={faBookOpen} />
+              </button>
+            )}
             <button 
               className={styles.actionBtn} 
               onClick={handleStartEdit}
@@ -127,6 +149,14 @@ export function BookDetailPage() {
               <FontAwesomeIcon icon={faLink} />
             </button>
             <button 
+              className={`${styles.actionBtn} ${styles.imageBtn}`} 
+              onClick={() => setIsImageModalOpen(true)}
+              aria-label="Change cover image"
+              title="Change book cover image"
+            >
+              <FontAwesomeIcon icon={faImage} />
+            </button>
+            <button 
               className={`${styles.actionBtn} ${styles.dangerBtn}`} 
               onClick={() => setIsDeleteDialogOpen(true)}
               aria-label="Delete book"
@@ -139,7 +169,19 @@ export function BookDetailPage() {
       </div>
 
       <div className={styles.header}>
-        <img src={coverUrl} alt={book.title} className={styles.coverLarge} />
+        <div 
+          className={styles.coverWrapper}
+          onClick={() => setIsImageModalOpen(true)}
+        >
+          <img 
+            src={`${coverUrl}?v=${imageKey}`} 
+            alt={book.title} 
+            className={styles.coverLarge} 
+          />
+          <div className={styles.coverOverlay}>
+            <FontAwesomeIcon icon={faCamera} className={styles.overlayIcon} />
+          </div>
+        </div>
         <div className={styles.info}>
           {isEditing ? (
             <>
@@ -171,18 +213,21 @@ export function BookDetailPage() {
                 />
               </div>
               <div className={styles.editActions}>
-                <button className={styles.cancelEditBtn} onClick={handleCancelEdit}>
+                <button className={styles.cancelEditBtn} onClick={handleCancelEdit} disabled={isSaving}>
                   Cancel
                 </button>
-                <button className={styles.saveEditBtn} onClick={handleSaveEdit}>
-                  Save Changes
+                <button className={styles.saveEditBtn} onClick={handleSaveEdit} disabled={isSaving}>
+                  {isSaving ? 'Saving...' : 'Save Changes'}
                 </button>
+                {updateError && (
+                  <p className={styles.editError}>Failed to save changes. Please try again.</p>
+                )}
               </div>
             </>
           ) : (
             <>
               <h1 className={styles.title}>{book.title}</h1>
-              <p className={styles.meta}>by {book.author.name}</p>
+              <p className={styles.meta}>by <Link to={ROUTES.AUTHOR_DETAIL(book.author.id)} className={styles.authorLink}>{book.author.name}</Link></p>
               {book.series && (
                 <Link to={ROUTES.SERIES_DETAIL(book.series.id)} className={styles.seriesLink}>
                   Part of: {book.series.name}
@@ -209,6 +254,18 @@ export function BookDetailPage() {
               </div>
             </div>
           )}
+
+          {!isEditing && hasTxtFile && (
+            <div className={styles.readSection}>
+              <button 
+                className={styles.readNowBtn}
+                onClick={() => setIsReaderOpen(true)}
+              >
+                <FontAwesomeIcon icon={faBookOpen} />
+                <span>Read Now</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -228,6 +285,20 @@ export function BookDetailPage() {
         message={`Are you sure you want to delete "${book.title}"? This action cannot be undone.`}
         confirmText="Delete"
         variant="danger"
+      />
+
+      <BookReaderModal
+        isOpen={isReaderOpen}
+        onClose={() => setIsReaderOpen(false)}
+        bookId={book.id}
+        bookTitle={book.title}
+      />
+
+      <BookImageModal
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+        bookId={book.id}
+        onImageUpdated={() => setImageKey((k) => k + 1)}
       />
     </div>
   );

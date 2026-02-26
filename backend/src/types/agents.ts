@@ -55,12 +55,14 @@ export interface ImageResolverAgentInput {
     authorName: string;
     authorSlug: string;
     bookSlug: string;
+    seriesSlug?: string | null;
   }>;
 }
 
 export interface ImageResolverAgentResult {
   authors: Map<string, { imageUrl: string | null; confidence: number }>;
   books: Map<string, { imageUrl: string | null; confidence: number }>;
+  series: Map<string, { imageUrl: string | null; confidence: number }>;
 }
 
 export interface MetadataResolverAgentInput {
