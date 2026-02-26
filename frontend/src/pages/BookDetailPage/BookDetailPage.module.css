@@ -87,6 +87,12 @@
   line-height: 1.7;
 }
 
+.publishYear {
+  font-size: 0.875rem;
+  color: var(--bn-text-muted);
+  margin-top: 0.5rem;
+}
+
 .downloadSection {
   margin-top: 2.5rem;
   padding-top: 2rem;

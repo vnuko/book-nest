@@ -190,6 +190,9 @@ export function BookDetailPage() {
                 </Link>
               )}
               {book.description && <p className={styles.description}>{book.description}</p>}
+              {book.firstPublishYear && (
+                <p className={styles.publishYear}>First published: {book.firstPublishYear}</p>
+              )}
             </>
           )}
           
