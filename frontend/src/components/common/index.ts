@@ -6,3 +6,6 @@ export { SearchBar } from './SearchBar';
 export { BackLink } from './BackLink';
 export { ErrorBoundary } from './ErrorBoundary';
 export { ErrorMessage } from './ErrorMessage';
+export { Modal } from './Modal';
+export { LikeButton } from './LikeButton';
+export { ConfirmDialog } from './ConfirmDialog';

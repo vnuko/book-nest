@@ -1,0 +1,27 @@
+.button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  font-size: 1.25rem;
+  color: var(--color-text-secondary, #888);
+  transition: color 0.2s ease;
+}
+
+.button:hover .icon {
+  color: #e74c3c;
+}
+
+.liked {
+  color: #e74c3c;
+}
+
+.button:hover .liked {
+  color: #c0392b;
+}

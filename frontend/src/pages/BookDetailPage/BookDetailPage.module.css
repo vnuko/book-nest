@@ -1,3 +1,45 @@
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--bn-bg);
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text-secondary);
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.actionBtn:hover {
+  background: var(--bn-sidebar);
+  color: var(--bn-text);
+  border-color: var(--bn-accent);
+}
+
+.actionBtn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dangerBtn:hover {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
 .header {
   display: flex;
   gap: 2.5rem;
@@ -123,6 +165,96 @@
   text-align: center;
   padding: 3rem;
   color: var(--bn-text-muted);
+}
+
+.editField {
+  margin-bottom: 1.25rem;
+}
+
+.editLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bn-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.editInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bn-bg);
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color var(--bn-transition-fast);
+}
+
+.editInput:focus {
+  outline: none;
+  border-color: var(--bn-accent);
+}
+
+.editTextarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bn-bg);
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text);
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color var(--bn-transition-fast);
+}
+
+.editTextarea:focus {
+  outline: none;
+  border-color: var(--bn-accent);
+}
+
+.editActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.cancelEditBtn {
+  padding: 0.625rem 1.25rem;
+  background: transparent;
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.cancelEditBtn:hover {
+  background: var(--bn-bg);
+  color: var(--bn-text);
+}
+
+.saveEditBtn {
+  padding: 0.625rem 1.25rem;
+  background: var(--bn-accent);
+  border: none;
+  border-radius: var(--bn-radius-sm);
+  color: #000;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.saveEditBtn:hover {
+  filter: brightness(1.1);
 }
 
 @media (max-width: 768px) {

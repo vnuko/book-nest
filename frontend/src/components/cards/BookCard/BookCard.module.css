@@ -2,14 +2,13 @@
   background-color: rgba(255, 255, 255, 0.05);
   padding: 16px;
   border-radius: 8px;
-  transition: all var(--bn-transition-normal);
+  transition: background-color var(--bn-transition-normal);
   cursor: pointer;
   height: 100%;
 }
 
 .card:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-4px);
 }
 
 .coverWrapper {

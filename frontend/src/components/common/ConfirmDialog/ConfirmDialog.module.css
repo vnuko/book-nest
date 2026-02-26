@@ -1,0 +1,104 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.dialog {
+  background: var(--bn-bg);
+  border-radius: var(--bn-radius);
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--bn-shadow-soft);
+  border: 1px solid var(--bn-border);
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.dangerIcon {
+  font-size: 3rem;
+  color: #e74c3c;
+}
+
+.warningIcon {
+  font-size: 3rem;
+  color: #f39c12;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--bn-text);
+  margin: 0 0 0.75rem 0;
+  text-align: center;
+}
+
+.message {
+  color: var(--bn-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--bn-radius-sm);
+  border: 1px solid var(--bn-border);
+  background: transparent;
+  color: var(--bn-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.cancelBtn:hover {
+  background: var(--bn-accent-light);
+  color: var(--bn-text);
+  border-color: var(--bn-border);
+}
+
+.confirmBtn {
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--bn-radius-sm);
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.danger {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.danger:hover {
+  background: #c0392b;
+}
+
+.warning {
+  background: #f39c12;
+  color: #fff;
+}
+
+.warning:hover {
+  background: #d68910;
+}

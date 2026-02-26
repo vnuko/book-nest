@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { ROUTES } from '../../../utils/routes';
 import { getImageUrl } from '../../../api/client';
+import { LikeButton } from '../../common';
+import { useToggleBookLike } from '../../../hooks';
 import type { Book } from '../../../types';
 import styles from './BookCard.module.css';
 
@@ -12,6 +15,8 @@ interface BookCardProps {
 
 export function BookCard({ book }: BookCardProps) {
   const navigate = useNavigate();
+  const [isLiked, setIsLiked] = useState(book.liked);
+  const { toggle } = useToggleBookLike(book.id);
 
   const handleClick = () => {
     navigate(ROUTES.BOOK_DETAIL(book.id));
@@ -22,6 +27,12 @@ export function BookCard({ book }: BookCardProps) {
       e.preventDefault();
       handleClick();
     }
+  };
+
+  const handleLikeToggle = () => {
+    const newLiked = !isLiked;
+    setIsLiked(newLiked);
+    toggle(newLiked);
   };
 
   const imageUrl = getImageUrl('books', book.id);
@@ -51,6 +62,13 @@ export function BookCard({ book }: BookCardProps) {
       <div className={styles.info}>
         <h3 className={styles.title}>{book.title}</h3>
         <p className={styles.authorName}>{book.author.name}</p>
+        <div className={styles.meta}>
+          <span className={styles.year}>{book.firstPublishYear}</span>
+          <LikeButton
+            isLiked={isLiked}
+            onToggle={handleLikeToggle}
+          />
+        </div>
       </div>
     </div>
   );

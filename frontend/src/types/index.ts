@@ -61,6 +61,7 @@ export interface Book {
   files: BookFile[];
   createdAt: string;
   updatedAt: string;
+  liked: boolean;
 }
 
 export interface BookListResponse {

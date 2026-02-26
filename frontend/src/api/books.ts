@@ -19,4 +19,7 @@ export const booksApi = {
 
   getFiles: (bookId: string) =>
     api.get<{ data: Book['files'] }>(`/api/books/${bookId}/files`),
+
+  toggleLike: (id: string, liked: boolean) =>
+    api.put<{ data: { liked: boolean } }>(`/api/books/${id}/like`, { liked }),
 };
