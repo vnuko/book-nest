@@ -155,7 +155,7 @@ export function SeriesDetailPage() {
         </div>
       </div>
 
-      <div className="page-content">
+      <div className={`page-content ${styles.pageContent}`}>
 
       {books.length > 0 && (
         <div className={styles.booksSection}>
