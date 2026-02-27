@@ -76,88 +76,86 @@ export function SeriesDetailPage() {
     : '/placeholder-series.jpg';
 
   return (
-    <div className="page-content">
-      <div className={styles.topBar}>
-        <BackLink to={ROUTES.SERIES} label="Back to Series" />
-        {!isEditing && (
-          <div className={styles.actions}>
-            <button
-              className={styles.actionBtn}
-              onClick={handleStartEdit}
-              aria-label="Edit series"
-              title="Edit series details"
-            >
-              <FontAwesomeIcon icon={faPen} />
-            </button>
-            <button
-              className={styles.actionBtn}
-              onClick={() => setIsRelinkModalOpen(true)}
-              aria-label="Relink series"
-              title="Link to different author"
-            >
-              <FontAwesomeIcon icon={faLink} />
-            </button>
-            <button
-              className={`${styles.actionBtn} ${styles.dangerBtn}`}
-              onClick={() => setIsDeleteDialogOpen(true)}
-              aria-label="Delete series"
-              title="Delete series"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
+    <>
+      <div className={styles.heroBanner} style={{ backgroundImage: `url(${bannerUrl})` }}>
+        <div className={styles.heroGradient}>
+          <div className={styles.backLink}>
+            <BackLink to={ROUTES.SERIES} label="Back to Series" />
           </div>
-        )}
-      </div>
-
-      <div className={styles.banner}>
-        <img
-          src={bannerUrl}
-          alt={series.name}
-          className={styles.bannerImg}
-        />
-        <div className={styles.bannerOverlay}>
-          {isEditing ? (
-            <div className={styles.editForm}>
-              <div className={styles.editField}>
-                <label className={styles.editLabel}>Series Title</label>
-                <input
-                  type="text"
-                  className={styles.editInput}
-                  value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
-                />
-              </div>
-              <div className={styles.editField}>
-                <label className={styles.editLabel}>Description</label>
-                <textarea
-                  className={styles.editTextarea}
-                  value={editedDescription}
-                  onChange={(e) => setEditedDescription(e.target.value)}
-                  rows={4}
-                />
-              </div>
-              <div className={styles.editActions}>
-                <button className={styles.cancelEditBtn} onClick={handleCancelEdit} disabled={isSaving}>
-                  Cancel
+          <div className={styles.heroContent}>
+            {!isEditing && (
+              <div className={styles.heroActions}>
+                <button
+                  className={styles.heroActionBtn}
+                  onClick={handleStartEdit}
+                  aria-label="Edit series"
+                  title="Edit series details"
+                >
+                  <FontAwesomeIcon icon={faPen} />
                 </button>
-                <button className={styles.saveEditBtn} onClick={handleSaveEdit} disabled={isSaving}>
-                  {isSaving ? 'Saving...' : 'Save Changes'}
+                <button
+                  className={styles.heroActionBtn}
+                  onClick={() => setIsRelinkModalOpen(true)}
+                  aria-label="Relink series"
+                  title="Link to different author"
+                >
+                  <FontAwesomeIcon icon={faLink} />
                 </button>
-                {updateError && (
-                  <p className={styles.editError}>Failed to save changes. Please try again.</p>
+                <button
+                  className={`${styles.heroActionBtn} ${styles.dangerBtn}`}
+                  onClick={() => setIsDeleteDialogOpen(true)}
+                  aria-label="Delete series"
+                  title="Delete series"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+              </div>
+            )}
+            {isEditing ? (
+              <div className={styles.editForm}>
+                <div className={styles.editField}>
+                  <label className={styles.editLabel}>Series Title</label>
+                  <input
+                    type="text"
+                    className={styles.editInput}
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                  />
+                </div>
+                <div className={styles.editField}>
+                  <label className={styles.editLabel}>Description</label>
+                  <textarea
+                    className={styles.editTextarea}
+                    value={editedDescription}
+                    onChange={(e) => setEditedDescription(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                <div className={styles.editActions}>
+                  <button className={styles.cancelEditBtn} onClick={handleCancelEdit} disabled={isSaving}>
+                    Cancel
+                  </button>
+                  <button className={styles.saveEditBtn} onClick={handleSaveEdit} disabled={isSaving}>
+                    {isSaving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                  {updateError && (
+                    <p className={styles.editError}>Failed to save changes. Please try again.</p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <>
+                <h1 className={styles.title}>{series.name}</h1>
+                {series.description && (
+                  <p className={styles.description}>{series.description}</p>
                 )}
-              </div>
-            </div>
-          ) : (
-            <>
-              <h1 className={styles.title}>{series.name}</h1>
-              {series.description && (
-                <p className={styles.description}>{series.description}</p>
-              )}
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
       </div>
+
+      <div className="page-content">
 
       {books.length > 0 && (
         <div className={styles.booksSection}>
@@ -186,6 +184,7 @@ export function SeriesDetailPage() {
         confirmText="Delete"
         variant="danger"
       />
-    </div>
+      </div>
+    </>
   );
 }
