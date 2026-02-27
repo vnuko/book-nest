@@ -17,7 +17,7 @@
   left: 0;
   right: 0;
   padding: 2.5rem 2rem 2rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5), transparent);
 }
 
 .title {
@@ -44,6 +44,152 @@
   color: var(--bn-text-muted);
 }
 
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--bn-bg);
+  border: 1px solid var(--bn-border);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text-secondary);
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.actionBtn:hover {
+  background: var(--bn-sidebar);
+  color: var(--bn-text);
+  border-color: var(--bn-accent);
+}
+
+.actionBtn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dangerBtn:hover {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.editForm {
+  max-width: 500px;
+}
+
+.editField {
+  margin-bottom: 1.25rem;
+}
+
+.editLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.editInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--bn-radius-sm);
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: border-color var(--bn-transition-fast);
+}
+
+.editInput:focus {
+  outline: none;
+  border-color: var(--bn-accent);
+}
+
+.editInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.editTextarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--bn-radius-sm);
+  color: white;
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color var(--bn-transition-fast);
+}
+
+.editTextarea:focus {
+  outline: none;
+  border-color: var(--bn-accent);
+}
+
+.editTextarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.editActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.cancelEditBtn {
+  padding: 0.625rem 1.25rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--bn-radius-sm);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.cancelEditBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.saveEditBtn {
+  padding: 0.625rem 1.25rem;
+  background: var(--bn-accent);
+  border: none;
+  border-radius: var(--bn-radius-sm);
+  color: #000;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.saveEditBtn:hover {
+  filter: brightness(1.1);
+}
+
 @media (max-width: 768px) {
   .bannerImg {
     height: 200px;
@@ -55,5 +201,13 @@
 
   .title {
     font-size: 1.75rem;
+  }
+
+  .editForm {
+    max-width: 100%;
+  }
+
+  .editInput {
+    font-size: 1.25rem;
   }
 }

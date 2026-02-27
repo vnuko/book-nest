@@ -13,4 +13,7 @@ export const seriesApi = {
 
   getBooks: (seriesId: string, page = 1, limit = 20) =>
     api.get<BookListResponse>(`/api/series/${seriesId}/books`, { page, limit }),
+
+  update: (id: string, data: { name: string; description?: string | null }) =>
+    api.put<{ data: Series }>(`/api/series/${id}`, data),
 };

@@ -7,3 +7,4 @@ export { useDebounce } from './useDebounce';
 export * from './useToggleBookLike';
 export * from './useUpdateBook';
 export * from './useUpdateAuthor';
+export * from './useUpdateSeries';
