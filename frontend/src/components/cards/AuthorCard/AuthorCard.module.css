@@ -1,5 +1,5 @@
 .card {
-  padding: 32px;
+  padding: 1.5rem;
   border-radius: 8px;
   transition: background-color var(--bn-transition-normal);
   cursor: pointer;
@@ -89,7 +89,7 @@
   }
 
   .card {
-    padding: 20px;
+    padding: .2rem;
   }
 
   .name {

@@ -21,7 +21,7 @@
   width: var(--bn-sidebar-width);
   background: var(--bn-sidebar);
   border-right: 1px solid var(--bn-border);
-  padding: 32px 24px;
+  padding: 1.5rem;
   z-index: 1050;
   transition: transform var(--bn-transition-slow);
   display: flex;

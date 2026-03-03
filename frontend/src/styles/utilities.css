@@ -1,6 +1,6 @@
 .page-content {
   width: 100%;
-  padding: 2.5rem 3rem 5rem;
+  padding: 0;
 }
 
 .bn-grid {
@@ -33,9 +33,9 @@
 }
 
 @media (max-width: 1024px) {
-  .page-content {
+  /* .page-content {
     padding: 2rem 1.5rem 3.75rem;
-  }
+  } */
 
   .bn-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -44,9 +44,9 @@
 }
 
 @media (max-width: 768px) {
-  .page-content {
+  /* .page-content {
     padding: 1.5rem 1.25rem 3rem;
-  }
+  } */
 
   .page-title {
     font-size: 1.5rem;
@@ -59,9 +59,9 @@
 }
 
 @media (max-width: 480px) {
-  .page-content {
+  /* .page-content {
     padding: 1.25rem 1rem 2.5rem;
-  }
+  } */
 
   .bn-grid {
     gap: 0.75rem;

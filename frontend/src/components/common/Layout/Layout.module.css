@@ -2,14 +2,14 @@
   margin-left: var(--bn-sidebar-width);
   margin-top: 0;
   min-height: 100vh;
-  padding: 40px;
+  padding: 1.5rem;
   overflow-y: auto;
 }
 
 @media (max-width: 768px) {
   .main {
     margin-left: 0;
-    padding: 24px;
+    padding: 1.5rem;
     padding-top: 80px;
   }
 }
