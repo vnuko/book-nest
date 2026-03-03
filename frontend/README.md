@@ -1,89 +1,82 @@
-# BookNest Frontend
+% BookNest Frontend
 
-A React-based frontend for the BookNest ebook management system.
+This is the React (Vite + TypeScript) frontend for Book Nest. It's a small, focused UI that talks to the backend REST API to browse, search and manage your ebook collection.
 
-## Prerequisites
+Quick start
 
-- Node.js 20+
-- Backend running at http://localhost:3000
-
-## Development
+1. Install dependencies:
 
 ```bash
-# Install dependencies
 npm install
+```
 
-# Generate API types from backend
+2. Generate API types (backend must be running):
+
+```bash
 npm run generate:api
+# generates `src/types/api.generated.ts` from the backend OpenAPI JSON
+```
 
-# Start development server
+3. Start dev server:
+
+```bash
 npm run dev
 ```
 
-## Production Build
+Build / preview
 
 ```bash
-# Build for production
 npm run build
-
-# Preview production build
 npm run preview
 ```
 
-## Available Scripts
+Scripts you will use
 
-| Script | Description |
-|--------|-------------|
-| `dev` | Start development server |
-| `build` | Build for production |
-| `preview` | Preview production build |
-| `lint` | Run ESLint |
-| `lint:fix` | Fix ESLint errors |
-| `format` | Format code with Prettier |
-| `typecheck` | Run TypeScript type check |
-| `generate:api` | Generate types from OpenAPI spec |
+| Script | Purpose |
+|--:|:--|
+| `dev` | Start dev server (Vite) |
+| `build` | Build production assets |
+| `preview` | Serve a preview of the production build |
+| `generate:api` | Fetch OpenAPI JSON and generate TypeScript types |
+| `typecheck` | Run TypeScript compiler checks |
+| `lint` / `lint:fix` | ESLint checks and auto-fix |
+| `format` | Prettier formatting |
 
-## Environment Variables
+Environment
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `VITE_API_URL` | Backend API URL | `http://localhost:3000` |
+- `VITE_API_URL` — base URL for backend API used by the frontend. Default: `http://localhost:3000`. Set this in `.env` or your deployment environment.
 
-## Project Structure
+Project structure (essential)
 
 ```
 src/
-├── api/           # API client and services
-├── components/    # React components
-│   ├── cards/     # Card components
-│   ├── common/    # Shared components
-│   └── sections/  # Page sections
-├── hooks/         # Custom React hooks
-├── lib/           # Utilities and configuration
-├── pages/         # Page components
-├── styles/        # Global styles
-├── types/         # TypeScript types
-└── utils/         # Helper functions
+├─ api/        # API client, services that call the backend
+├─ components/ # UI components (cards, common, layout)
+├─ pages/      # Page-level components (routing targets)
+├─ hooks/      # Reusable React hooks
+├─ styles/     # Global and utility styles
+└─ types/      # Generated API types and app types
 ```
 
-## API Integration
+API integration notes
 
-The frontend communicates with the backend via REST API.
+- The frontend relies on generated OpenAPI types for a safer integration. Run `npm run generate:api` whenever the backend API/Swagger changes.
+- Generated types live at: `src/types/api.generated.ts`.
 
-1. Ensure backend is running
-2. Run `npm run generate:api` to generate types
-3. Types are available at `src/types/api.generated.ts`
+Troubleshooting & tips
 
-## Deployment
+- `generate:api` fails: ensure backend is running at `VITE_API_URL` and `http://localhost:3000/api-docs/swagger.json` is reachable.
+- CORS errors: set `VITE_API_URL` correctly and add your origin to backend `CORS_ORIGINS`.
+- Types out of sync: re-run `npm run generate:api` after backend changes.
 
-### Same Origin (Recommended)
+Deployment
 
-Serve frontend from the same domain as backend:
+- Same origin (recommended): build the frontend and let your backend serve static assets or configure your web server to host the built files.
+- Different origin: host frontend separately and set `VITE_API_URL` to the backend URL; configure CORS on the backend.
 
-```
-# Backend serves frontend from /public or similar
-```
+Contributing
 
-### Different Origin
+- Keep UI logic in `src/components` and small; add tests for new behaviors.
+- If you change an API contract, update the backend OpenAPI spec and then run `npm run generate:api` in the frontend.
 
-Configure CORS on backend and set `VITE_API_URL` in `.env.production`.
+If you'd like, I can also add a tiny example `scripts/quickstart.sh` to automate install + generate + dev start.
