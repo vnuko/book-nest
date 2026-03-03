@@ -120,12 +120,13 @@ Project layout (high level)
 
 ```
 ./
-├─ backend/        # Express API, indexing worker, swagger config
+├─ backend/        # Express API, indexing worker, swagger & runtime configs
+│  ├─ source/      # Drop raw ebooks here for indexing (backend manages this)
+│  ├─ ebooks/      # Organized library output (created/managed by backend)
+│  ├─ data/        # SQLite DB (booknest.db) and DB files
+│  └─ logs/        # Application and indexing logs
 ├─ frontend/       # React frontend (Vite)
-├─ source/         # Drop raw ebooks here for indexing
-├─ ebooks/         # Organized library output
-├─ data/           # SQLite DB (booknest.db)
-└─ logs/           # Application logs and batch histories
+└─ docs/           # Design notes, plans and documentation
 ```
 
 Next steps & tips
