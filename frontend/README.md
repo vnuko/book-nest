@@ -62,10 +62,11 @@ API integration notes
 
 - The frontend relies on generated OpenAPI types for a safer integration. Run `npm run generate:api` whenever the backend API/Swagger changes.
 - Generated types live at: `src/types/api.generated.ts`.
+- Note: The generate:api script assumes the backend is running on port 3000. If you're running the backend on a custom port, you'll need to temporarily modify this script or call the openapi-typescript tool manually with the correct port.
 
 Troubleshooting & tips
 
-- `generate:api` fails: ensure backend is running at `VITE_API_URL` and `http://localhost:3000/api-docs/swagger.json` is reachable.
+- `generate:api` fails: ensure backend is running at `VITE_API_URL` and `{VITE_API_URL}/api-docs/swagger.json` is reachable.
 - CORS errors: set `VITE_API_URL` correctly and add your origin to backend `CORS_ORIGINS`.
 - Types out of sync: re-run `npm run generate:api` after backend changes.
 

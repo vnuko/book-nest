@@ -19,8 +19,11 @@ server.stderr.on('data', (data) => {
 setTimeout(() => {
   console.log('\n=== Testing endpoints ===\n');
   
+  const port = process.env.PORT || 3000;
+  const serverUrl = `http://localhost:${port}`;
+  
   // Test health
-  http.get('http://localhost:3000/health', (res) => {
+  http.get(`${serverUrl}/health`, (res) => {
     let data = '';
     res.on('data', (chunk) => data += chunk);
     res.on('end', () => {
@@ -29,7 +32,7 @@ setTimeout(() => {
       // Start indexing
       const req = http.request({
         hostname: 'localhost',
-        port: 3000,
+        port: parseInt(port),
         path: '/api/indexing/start',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }

@@ -5,6 +5,7 @@ import { fileRepo, bookRepo, authorRepo, seriesRepo } from '../../db/repositorie
 import { config } from '../../config/index.js';
 import { logger } from '../../utils/logger.js';
 import { throwNotFound, ApiErrorClass } from '../middleware/errorHandler.js';
+import { ImageProcessor } from '../../utils/imageProcessor.js';
 
 async function downloadBookFile(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -119,10 +120,11 @@ async function getSeriesImage(req: Request, res: Response, next: NextFunction): 
 }
 
 async function uploadAuthorImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+  const file = req.file;
   try {
     const { authorId } = req.params;
 
-    if (!(req as any).file) {
+    if (!file) {
       throw new ApiErrorClass('NO_FILE', 'No file uploaded', 400);
     }
 
@@ -131,26 +133,31 @@ async function uploadAuthorImage(req: Request, res: Response, next: NextFunction
       throwNotFound('Author', authorId);
     }
 
-    const file = (req as any).file;
     const ext = path.extname(file.originalname || 'image.jpg').toLowerCase().slice(1);
     const filename = `author.${ext === 'jpeg' ? 'jpg' : ext}`;
     const targetPath = path.join(config.paths.ebooks, author.slug, filename);
 
     await fs.ensureDir(path.dirname(targetPath));
 
-    await fs.copy(file.path, targetPath, { overwrite: true });
+    // Process author image specifically: preserve the exact crop provided by the frontend
+    await ImageProcessor.processAuthorImage(file, targetPath);
 
     res.json({ success: true });
   } catch (error) {
     next(error);
+  } finally {
+    if (file && (await fs.pathExists(file.path))) {
+      await fs.unlink(file.path);
+    }
   }
 }
 
 async function uploadBookImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+  const file = req.file;
   try {
     const { bookId } = req.params;
 
-    if (!(req as any).file) {
+    if (!file) {
       throw new ApiErrorClass('NO_FILE', 'No file uploaded', 400);
     }
 
@@ -160,7 +167,6 @@ async function uploadBookImage(req: Request, res: Response, next: NextFunction):
     }
 
     const author = authorRepo.findById(book.authorId);
-    const file = (req as any).file;
     const ext = path.extname(file.originalname || 'image.jpg').toLowerCase().slice(1);
     const filename = `book.${ext === 'jpeg' ? 'jpg' : ext}`;
     const targetPath = path.join(
@@ -172,19 +178,25 @@ async function uploadBookImage(req: Request, res: Response, next: NextFunction):
 
     await fs.ensureDir(path.dirname(targetPath));
 
-    await fs.copy(file.path, targetPath, { overwrite: true });
+    // Process image to ensure standard book cover aspect ratio without crop 
+    await ImageProcessor.validateAndProcessForUpload(file, targetPath);
 
     res.json({ success: true });
   } catch (error) {
     next(error);
+  } finally {
+    if (file && (await fs.pathExists(file.path))) {
+      await fs.unlink(file.path);
+    }
   }
 }
 
 async function uploadSeriesImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+  const file = req.file;
   try {
     const { seriesId } = req.params;
 
-    if (!(req as any).file) {
+    if (!file) {
       throw new ApiErrorClass('NO_FILE', 'No file uploaded', 400);
     }
 
@@ -194,18 +206,22 @@ async function uploadSeriesImage(req: Request, res: Response, next: NextFunction
     }
 
     const author = authorRepo.findById(series.authorId);
-    const file = (req as any).file;
     const ext = path.extname(file.originalname || 'image.jpg').toLowerCase().slice(1);
     const filename = `${series.slug}.${ext === 'jpeg' ? 'jpg' : ext}`;
     const targetPath = path.join(config.paths.ebooks, author?.slug || 'unknown', filename);
 
     await fs.ensureDir(path.dirname(targetPath));
 
-    await fs.copy(file.path, targetPath, { overwrite: true });
+    // Process image to ensure standard aspect ratio without crop
+    await ImageProcessor.validateAndProcessForUpload(file, targetPath);
 
     res.json({ success: true });
   } catch (error) {
     next(error);
+  } finally {
+    if (file && (await fs.pathExists(file.path))) {
+      await fs.unlink(file.path);
+    }
   }
 }
 

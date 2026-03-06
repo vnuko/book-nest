@@ -1,6 +1,10 @@
 #!/bin/bash
 cd /mnt/c/Users/T5RT641/dev/projects/book_nest
 
+# Get the PORT from environment or default to 3000
+PORT=${PORT:-3000}
+SERVER_URL="http://localhost:$PORT"
+
 # Kill any existing processes
 pkill -f "node dist" 2>/dev/null || true
 sleep 2
@@ -16,15 +20,15 @@ sleep 5
 
 # Test endpoints
 echo "Testing health endpoint..."
-curl -s http://localhost:3000/health
+curl -s $SERVER_URL/health
 echo ""
 
 echo "Testing root endpoint..."
-curl -s http://localhost:3000/
+curl -s $SERVER_URL/
 echo ""
 
 echo "Testing indexing status..."
-curl -s http://localhost:3000/api/indexing/status
+curl -s $SERVER_URL/api/indexing/status
 echo ""
 
 # Cleanup

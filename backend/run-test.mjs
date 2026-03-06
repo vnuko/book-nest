@@ -23,9 +23,10 @@ server.on('error', (err) => {
 
 async function makeRequest(method, path, body = null) {
   return new Promise((resolve, reject) => {
+    const port = process.env.PORT || 3000;
     const options = {
       hostname: 'localhost',
-      port: 3000,
+      port: parseInt(port),
       path,
       method,
       headers: body ? { 'Content-Type': 'application/json' } : {}

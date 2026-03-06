@@ -56,14 +56,14 @@ Configuration notes
 
 ```env
 # Server
-PORT=3000
+PORT=3000  # Change this to your desired backend port
 NODE_ENV=development
 
 # API URL (used by frontend)
-VITE_API_URL=http://localhost:3000
+VITE_API_URL=http://localhost:3000  # Update this to use the same port as PORT variable above when changed
 
 # CORS (comma-separated origins)
-CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+CORS_ORIGINS=http://localhost:5173,http://localhost:3000  # Make sure this port matches PORT variable when changed
 
 # Logging
 LOG_LEVEL=DEVELOPMENT
@@ -91,10 +91,10 @@ CALIBRE_PATH=/usr/bin/ebook-convert
 
 Per-variable explanations
 
-- `PORT` — TCP port the backend server listens on. Default `3000`. Use a different port if 3000 is in use or when running multiple services on one host (e.g., `PORT=8080`).
+- `PORT` — TCP port the backend server listens on. Default `3000`. Use a different port if 3000 is in use or when running multiple services on one host (e.g., `PORT=8080`). Remember to update `VITE_API_URL` and `CORS_ORIGINS` accordingly to match your chosen port.
 - `NODE_ENV` — runtime environment. Use `development` while developing and `production` in deployed environments; some logging and error-handling change based on this.
-- `VITE_API_URL` — frontend base URL for API requests (used by the React/Vite app). When running locally use `http://localhost:3000`; in production set to your public API URL.
-- `CORS_ORIGINS` — comma-separated list of allowed origins for cross-origin requests (frontend dev port(s) and any other web UI). Example: `http://localhost:5173,http://localhost:3000`.
+- `VITE_API_URL` — frontend base URL for API requests (used by the React/Vite app). When running locally use `http://localhost:{PORT}` (where {PORT} matches the value set in your PORT variable); in production set to your public API URL.
+- `CORS_ORIGINS` — comma-separated list of allowed origins for cross-origin requests (frontend dev port(s) and any other web UI). Example: `http://localhost:5173,http://localhost:3000` (replace with your actual backend port instead of 3000).
 - `LOG_LEVEL` — verbosity for application logs. Common values: `DEBUG`, `INFO`, `WARN`, `ERROR`, `DEVELOPMENT`. Pick higher verbosity during development and lower in production.
 - `SOURCE_PATH` — folder where you place raw/unorganized ebooks to be indexed (relative or absolute path). Default `./source`.
 - `EBOOKS_PATH` — destination folder where Book Nest will organize processed ebooks (authors/series subfolders). Default `./ebooks`.
@@ -135,7 +135,7 @@ Verify your environment (quick checklist)
 - Calibre installed and `ebook-convert` available: `which ebook-convert` or `ebook-convert --version` (required for format conversion)
 - Writable directories: ensure `backend/source`, `backend/ebooks`, `backend/data`, and `backend/logs` are writable by the running user
 - `.env` present and configured: `cp .env.example .env` and set `GEMINI_API_KEY`, `CALIBRE_PATH`, `DB_PATH` as needed
-- Start the server and visit the Swagger UI: `http://localhost:3000/api-docs`
+- Start the server and visit the Swagger UI: `http://localhost:{PORT}/api-docs` (replace {PORT} with your backend port from .env)
 
 Calibre installation (common platforms)
 
@@ -155,14 +155,14 @@ Database and migrations
 
 Quick API examples (curl)
 
-- Start indexing: `curl -X POST http://localhost:3000/api/indexing/start`
-- Indexing status: `curl http://localhost:3000/api/indexing/status`
-- Search books: `curl "http://localhost:3000/api/books/search?q=term"`
+- Start indexing: `curl -X POST http://localhost:{PORT}/api/indexing/start` (replace {PORT} with your backend port)
+- Indexing status: `curl http://localhost:{PORT}/api/indexing/status` (replace {PORT} with your backend port)
+- Search books: `curl "http://localhost:{PORT}/api/books/search?q=term"` (replace {PORT} with your backend port)
 
 Swagger & generating client types
 
-- Open the interactive docs at `http://localhost:3000/api-docs`.
-- Frontend helper: the `frontend/package.json` contains a `generate:api` script that calls `openapi-typescript` against `http://localhost:3000/api-docs/swagger.json` to generate TypeScript types. Run it after starting the backend if you change the API.
+- Open the interactive docs at `http://localhost:{PORT}/api-docs` (replace {PORT} with your backend port).
+- Frontend helper: the `frontend/package.json` contains a `generate:api` script that calls `openapi-typescript` against `http://localhost:{PORT}/api-docs/swagger.json` (replace {PORT} with your backend port) to generate TypeScript types. Run it after starting the backend if you change the API.
 
 Troubleshooting & tips
 

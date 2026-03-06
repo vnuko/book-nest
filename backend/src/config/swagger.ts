@@ -1,5 +1,16 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 
+// Function to get the server URL based on the PORT environment variable
+function getServerUrl(): string {
+  const port = process.env.PORT || '3000';
+  // Check if we're in development environment to show appropriate server URL
+  if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+    return `http://localhost:${port}`;
+  }
+  // In production, we might want to use a different host, or just localhost with the configured port
+  return `http://localhost:${port}`;
+}
+
 const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
@@ -13,7 +24,7 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: getServerUrl(),
         description: 'Development server',
       },
     ],

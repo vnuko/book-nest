@@ -14,8 +14,8 @@ const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const tempDir = path.join(projectRoot, 'temp', 'uploads');
 
 const storage = multer.diskStorage({
-  destination: async (req, file, cb) => {
-    await fs.ensureDir(tempDir);
+  destination: (req, file, cb) => {
+    fs.ensureDirSync(tempDir);
     cb(null, tempDir);
   },
   filename: (req, file, cb) => {
@@ -39,10 +39,13 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
   }
 };
 
+// Configure multer limits to allow additional fields with files
 export const uploadMiddleware = multer({
   storage,
   fileFilter,
   limits: {
     fileSize: MAX_FILE_SIZE,
+    // Allow up to 10 additional fields that may contain crop data
+    fields: 10,
   },
 });
